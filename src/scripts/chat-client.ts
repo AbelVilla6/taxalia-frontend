@@ -150,13 +150,6 @@ export function init(options: InitOptions = {}): void {
       bubble.textContent = msg.content;
       el.appendChild(bubble);
 
-      if (msg.warning) {
-        const badge = document.createElement('p');
-        badge.className = 'chat-msg-warning';
-        badge.textContent = msg.warning;
-        el.appendChild(badge);
-      }
-
       messagesEl.appendChild(el);
       messagesEl.scrollTop = messagesEl.scrollHeight;
       return el;
@@ -293,10 +286,6 @@ export function init(options: InitOptions = {}): void {
               }
               if (event.done) {
                 if (typeof event.warning === 'string' && event.warning.length > 0) {
-                  const badge = document.createElement('p');
-                  badge.className = 'chat-msg-warning';
-                  badge.textContent = event.warning;
-                  assistantEl.appendChild(badge);
                   assistantMsg.warning = event.warning;
                 }
                 const latencyMs = Math.round(performance.now() - startedAt);
@@ -333,10 +322,7 @@ export function init(options: InitOptions = {}): void {
           assistantEl.remove();
           history.pop();
         } else {
-          const badge = document.createElement('p');
-          badge.className = 'chat-msg-warning';
-          badge.textContent = partialCopy;
-          assistantEl.appendChild(badge);
+          assistantMsg.warning = partialCopy;
         }
       } finally {
         window.clearTimeout(timeoutId);
