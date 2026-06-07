@@ -1,0 +1,263 @@
+---
+const backendBase = (import.meta.env.PUBLIC_CHAT_API_BASE ?? 'http://localhost:4324').replace(/\/+$/, '');
+const checkedAt = new Date().toISOString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Frontend Health | Taxalia</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b1017;
+        --panel: #121b26;
+        --panel-soft: #172333;
+        --text: #eef4f8;
+        --muted: #9fb0bf;
+        --ok: #58d68d;
+        --warn: #f7c948;
+        --bad: #ff6b6b;
+        --line: rgba(255, 255, 255, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(88, 214, 141, 0.14), transparent 32rem),
+          radial-gradient(circle at 80% 0%, rgba(70, 130, 180, 0.16), transparent 28rem),
+          var(--bg);
+        color: var(--text);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      }
+
+      main {
+        width: min(900px, 100%);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: clamp(1.5rem, 4vw, 2.5rem);
+        background: linear-gradient(145deg, rgba(18, 27, 38, 0.96), rgba(12, 18, 27, 0.96));
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+      }
+
+      h1 {
+        margin: 0 0 0.5rem;
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        letter-spacing: -0.06em;
+      }
+
+      .summary {
+        margin: 0 0 2rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1rem;
+        background: var(--panel-soft);
+      }
+
+      .label {
+        margin: 0 0 0.5rem;
+        color: var(--muted);
+        font-size: 0.78rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .value {
+        margin: 0;
+        font-size: 1rem;
+        overflow-wrap: anywhere;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+      }
+
+      .status::before {
+        content: "";
+        width: 0.7rem;
+        height: 0.7rem;
+        border-radius: 50%;
+        background: var(--warn);
+        box-shadow: 0 0 24px var(--warn);
+      }
+
+      [data-state="ok"] .status::before {
+        background: var(--ok);
+        box-shadow: 0 0 24px var(--ok);
+      }
+
+      [data-state="error"] .status::before {
+        background: var(--bad);
+        box-shadow: 0 0 24px var(--bad);
+      }
+
+      pre {
+        margin: 1rem 0 0;
+        max-height: 280px;
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 1rem;
+        background: #070b10;
+        color: #d8e2ea;
+      }
+    </style>
+  </head>
+  <body>
+    <main data-state="pending">
+      <h1>Health</h1>
+      <p class="summary">
+        Current frontend status, live backend health check, and Ollama connectivity.
+      </p>
+
+      <section class="grid" aria-label="Service status">
+        <article class="card" data-state="ok">
+          <p class="label">Frontend</p>
+          <p class="value status">OK</p>
+        </article>
+
+        <article class="card" id="backend-card" data-state="pending">
+          <p class="label">Backend</p>
+          <p class="value status" id="backend-status">Checking…</p>
+        </article>
+
+        <article class="card" id="ollama-card" data-state="pending">
+          <p class="label">Ollama</p>
+          <p class="value status" id="ollama-status">Checking…</p>
+        </article>
+
+        <article class="card">
+          <p class="label">Backend URL</p>
+          <p class="value">{backendBase}/health</p>
+        </article>
+
+        <article class="card">
+          <p class="label">Ollama URL</p>
+          <p class="value">{backendBase}/health/ollama</p>
+        </article>
+
+        <article class="card">
+          <p class="label">Rendered at</p>
+          <p class="value">{checkedAt}</p>
+        </article>
+      </section>
+
+      <pre id="backend-payload" aria-label="Backend health response">Waiting for backend response…</pre>
+      <pre id="ollama-payload" aria-label="Backend Ollama health response">Waiting for Ollama health response…</pre>
+    </main>
+
+    <script
+      type="application/json"
+      id="health-config"
+      is:inline
+      set:html={JSON.stringify({
+        backendHealthUrl: `${backendBase}/health`,
+        ollamaHealthUrl: `${backendBase}/health/ollama`,
+      })}
+    ></script>
+    <script>
+      const configEl = document.getElementById('health-config');
+      const backendCard = document.getElementById('backend-card');
+      const backendStatus = document.getElementById('backend-status');
+      const backendPayload = document.getElementById('backend-payload');
+      const ollamaCard = document.getElementById('ollama-card');
+      const ollamaStatus = document.getElementById('ollama-status');
+      const ollamaPayload = document.getElementById('ollama-payload');
+
+      async function fetchHealth(url) {
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 5000);
+
+        try {
+          const response = await fetch(url, {
+            headers: { Accept: 'application/json' },
+            signal: controller.signal,
+          });
+          const payload = await response.json().catch(() => null);
+          return { response, payload };
+        } finally {
+          window.clearTimeout(timeout);
+        }
+      }
+
+      function renderHealthResult({ card, status, payloadEl, response, payload }) {
+        const isHealthy = response.ok && payload?.ok === true;
+
+        card.dataset.state = isHealthy ? 'ok' : 'error';
+        status.textContent = isHealthy ? 'OK' : `Unhealthy (${response.status})`;
+        payloadEl.textContent = JSON.stringify(payload ?? { status: response.status }, null, 2);
+      }
+
+      function renderHealthError({ card, status, payloadEl, error }) {
+        card.dataset.state = 'error';
+        status.textContent = 'Unavailable';
+        payloadEl.textContent = JSON.stringify(
+          {
+            ok: false,
+            error: error instanceof Error ? error.message : String(error),
+          },
+          null,
+          2,
+        );
+      }
+
+      async function checkBackendHealth() {
+        if (!configEl || !backendCard || !backendStatus || !backendPayload) return;
+
+        const config = JSON.parse(configEl.textContent || '{}');
+
+        try {
+          const { response, payload } = await fetchHealth(config.backendHealthUrl);
+          const isHealthy = response.ok && payload?.ok === true;
+
+          backendCard.dataset.state = isHealthy ? 'ok' : 'error';
+          backendStatus.textContent = isHealthy ? 'OK' : `Unhealthy (${response.status})`;
+          backendPayload.textContent = JSON.stringify(payload ?? { status: response.status }, null, 2);
+        } catch (error) {
+          renderHealthError({ card: backendCard, status: backendStatus, payloadEl: backendPayload, error });
+        }
+      }
+
+      async function checkOllamaHealth() {
+        if (!configEl || !ollamaCard || !ollamaStatus || !ollamaPayload) return;
+
+        const config = JSON.parse(configEl.textContent || '{}');
+
+        try {
+          const { response, payload } = await fetchHealth(config.ollamaHealthUrl);
+          renderHealthResult({ card: ollamaCard, status: ollamaStatus, payloadEl: ollamaPayload, response, payload });
+        } catch (error) {
+          renderHealthError({ card: ollamaCard, status: ollamaStatus, payloadEl: ollamaPayload, error });
+        }
+      }
+
+      void checkBackendHealth();
+      void checkOllamaHealth();
+    </script>
+  </body>
+</html>
