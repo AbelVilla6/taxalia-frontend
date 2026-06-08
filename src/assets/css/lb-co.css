@@ -177,6 +177,10 @@
   padding-top: clamp(1.25rem, 3vw, 2.25rem);
 }
 
+.service-detail-section {
+  padding-top: clamp(1.25rem, 3vw, 2.25rem);
+}
+
 .service-card-lb {
   display: flex;
   flex-direction: column;

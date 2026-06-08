@@ -15,18 +15,10 @@ if (!group) {
 }
 ---
 
-<section class="section-sm" style="background:var(--color-bg-soft);">
-  <div class="container">
-    <p class="eyebrow">{copy.services.pageEyebrow}</p>
-    <h1 class="section-title" style="text-transform:none;font-weight:500;">{group.title}</h1>
-    <p class="section-lead" style="max-width:760px;">{group.description}</p>
-  </div>
-</section>
-
-<section class="section services-section" aria-labelledby="service-detail-heading">
+<section class="section services-section service-detail-section" aria-labelledby="service-detail-heading">
   <div class="container">
     <div class="text-center" style="margin-bottom:clamp(2rem,4vw,3.5rem);">
-      <p class="eyebrow" style="justify-content:center;gap:0.4rem;">
+      <p class="eyebrow" style="display:flex;width:100%;justify-content:flex-start;gap:0.4rem;text-align:left;">
         <span>{copy.services.detailEyebrow}</span>
       </p>
       <h2 id="service-detail-heading" class="section-title" style="margin-inline:auto;text-align:center;text-transform:none;font-weight:500;">
@@ -46,10 +38,5 @@ if (!group) {
       ))}
     </div>
 
-    <div class="text-center" style="margin-top:clamp(2rem,4vw,3rem);">
-      <a href={localizePath(lang, '/contact')} class="btn">
-        {copy.services.contactCta} <span aria-hidden="true">&rarr;</span>
-      </a>
-    </div>
   </div>
 </section>
