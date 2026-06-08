@@ -184,6 +184,7 @@ export const ui = {
       error: 'Sorry, something went wrong. Please try again.',
       personaName: 'Lexi',
       humanHandoff: 'Talk to a person',
+      disclaimer: 'AI can make mistakes. This is only to help clarify your questions.',
       partialWarning: 'Some answers may be incomplete.',
     },
     pages: {
@@ -349,6 +350,7 @@ export const ui = {
       error: 'Lo siento, algo salió mal. Inténtalo de nuevo.',
       personaName: 'Lexi',
       humanHandoff: 'Hablar con una persona',
+      disclaimer: 'La IA puede equivocarse.',
       partialWarning: 'Algunas respuestas pueden estar incompletas.',
     },
     pages: {
