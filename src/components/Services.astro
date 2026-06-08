@@ -20,7 +20,7 @@ const icons = [
   <div class="container">
     <!-- Header -->
     <div class="text-center" style="margin-bottom:clamp(2rem,4vw,3.5rem);">
-      <p class="eyebrow" style={`justify-content:${isLeftAligned ? 'flex-start' : 'center'};gap:0.4rem;`}>
+      <p class="eyebrow" style={`${isLeftAligned ? 'display:flex;width:100%;' : ''}justify-content:${isLeftAligned ? 'flex-start' : 'center'};gap:0.4rem;`}>
         <span>{copy.eyebrow}</span>
       </p>
       <h2 id="services-heading" class="section-title" style="margin-inline:auto;text-align:center;text-transform:none;font-weight:500;">
