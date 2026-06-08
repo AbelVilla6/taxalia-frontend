@@ -28,7 +28,7 @@ const icons = [
 
     <!-- Cards grid -->
     <div class="grid grid-3" style="--grid-gap:1.5rem;">
-      {copy.items.map((svc, index) => (
+      {copy.groups.map((svc, index) => (
         <article class="service-card-lb">
           <div class="service-icon-wrap" set:html={icons[index]} />
           <h3 class="service-card-title">{svc.title}</h3>

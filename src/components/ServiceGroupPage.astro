@@ -1,0 +1,55 @@
+---
+import { localizePath, ui, type Lang } from '../i18n';
+
+export interface Props {
+  groupSlug: string;
+  lang?: Lang;
+}
+
+const { groupSlug, lang = 'en' } = Astro.props;
+const copy = ui[lang];
+const group = copy.services.groups.find((item) => item.slug === groupSlug);
+
+if (!group) {
+  throw new Error(`Unknown service group: ${groupSlug}`);
+}
+---
+
+<section class="section-sm" style="background:var(--color-bg-soft);">
+  <div class="container">
+    <p class="eyebrow">{copy.services.pageEyebrow}</p>
+    <h1 class="section-title" style="text-transform:none;font-weight:500;">{group.title}</h1>
+    <p class="section-lead" style="max-width:760px;">{group.description}</p>
+  </div>
+</section>
+
+<section class="section services-section" aria-labelledby="service-detail-heading">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:clamp(2rem,4vw,3.5rem);">
+      <p class="eyebrow" style="justify-content:center;gap:0.4rem;">
+        <span>{copy.services.detailEyebrow}</span>
+      </p>
+      <h2 id="service-detail-heading" class="section-title" style="margin-inline:auto;text-align:center;text-transform:none;font-weight:500;">
+        {group.title}
+      </h2>
+    </div>
+
+    <div class="service-detail-grid">
+      {group.services.map((service) => (
+        <article class="service-detail-card">
+          <h3 class="service-card-title">{service.title}</h3>
+          <p class="service-card-text">{service.description}</p>
+          <a href={localizePath(lang, '/contact')} class="btn btn-outline">
+            {copy.services.learnMore} <span aria-hidden="true">&rarr;</span>
+          </a>
+        </article>
+      ))}
+    </div>
+
+    <div class="text-center" style="margin-top:clamp(2rem,4vw,3rem);">
+      <a href={localizePath(lang, '/contact')} class="btn">
+        {copy.services.contactCta} <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>

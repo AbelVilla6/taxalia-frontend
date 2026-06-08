@@ -194,6 +194,29 @@
   border-color: var(--color-accent);
 }
 
+.service-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.service-detail-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-height: 100%;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.service-detail-card .btn {
+  align-self: flex-start;
+  margin-top: auto;
+}
+
 .service-icon-wrap {
   display: inline-flex;
   align-items: center;

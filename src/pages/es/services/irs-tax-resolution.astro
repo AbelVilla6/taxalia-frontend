@@ -1,0 +1,20 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Header from '../../../components/Header.astro';
+import ServiceGroupPage from '../../../components/ServiceGroupPage.astro';
+import Footer from '../../../components/Footer.astro';
+import { ui } from '../../../i18n';
+
+const lang = 'es';
+const copy = ui[lang];
+const groupSlug = 'irs-tax-resolution';
+const group = copy.services.groups.find((item) => item.slug === groupSlug)!;
+---
+
+<Base title={`${group.title} - LB & CO Global Advisors`} description={group.description} lang={lang}>
+  <Header activePage="services" lang={lang} />
+  <main id="main-content">
+    <ServiceGroupPage groupSlug={groupSlug} lang={lang} />
+  </main>
+  <Footer lang={lang} />
+</Base>

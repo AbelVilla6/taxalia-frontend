@@ -59,7 +59,7 @@ export const ui = {
       services: {
         title: 'Services - LB & CO Global Advisors',
         description:
-          'Advisory, valuation, and financial guidance services from LB & CO Global Advisors.',
+          'Income tax preparation, business accounting, payroll, and IRS tax problem resolution services from LB & CO Global Advisors.',
       },
       contact: {
         title: 'Contact Us - LB & CO Global Advisors',
@@ -113,27 +113,86 @@ export const ui = {
       eyebrow: 'Our Services',
       pageEyebrow: 'What We Do',
       pageTitle: 'Our Services',
-      title: 'Solutions That Drive Clarity and Confidence',
+      title: 'Tax and Accounting Services for People and Businesses Abroad',
       learnMore: 'Learn More',
       learnMoreAria: 'Learn more about',
-      items: [
+      contactCta: 'Speak with an advisor',
+      detailEyebrow: 'Services included',
+      groups: [
         {
-          title: 'Advisory Services',
+          slug: 'income-tax',
+          title: 'Income Tax Return Preparation',
           description:
-            'Strategic advice and business consulting services to support growth, transactions, and operational excellence.',
-          href: '/services/advisory',
+            'Personal, business, international, and expat tax return support designed to keep filings clear, accurate, and compliant.',
+          href: '/services/income-tax',
+          services: [
+            {
+              title: 'Income Tax Return Preparation Services',
+              description: 'End-to-end preparation support for federal and applicable state income tax filings.',
+            },
+            {
+              title: 'Personal Income Tax Preparation',
+              description: 'Individual tax return preparation for residents, nonresidents, and taxpayers with cross-border considerations.',
+            },
+            {
+              title: 'Business Income Tax Preparation',
+              description: 'Tax preparation for business owners who need organized reporting and filing support.',
+            },
+            {
+              title: 'International Taxpayer Preparation',
+              description: 'Guidance for taxpayers with international income, assets, residency, or reporting obligations.',
+            },
+            {
+              title: 'Expat Income Tax Services',
+              description: 'Tax preparation support for Americans living abroad and families managing foreign income or exclusions.',
+            },
+            {
+              title: 'Foreign Bank Account Reporting',
+              description: 'Support for foreign account reporting requirements, including FBAR-related organization and filing guidance.',
+            },
+            {
+              title: 'Tax Planning',
+              description: 'Forward-looking planning to anticipate tax impact, avoid surprises, and make informed financial decisions.',
+            },
+          ],
         },
         {
-          title: 'Valuation Support',
+          slug: 'business-accounting',
+          title: 'Business Accounting',
           description:
-            'Independent valuations for businesses, real estate, and intangible assets delivered with rigor and integrity.',
-          href: '/services/valuation',
+            'Accounting, corporate tax preparation, small business bookkeeping, and payroll support for growing companies.',
+          href: '/services/business-accounting',
+          services: [
+            {
+              title: 'Business Accounting Services',
+              description: 'Ongoing accounting support to keep business records organized, decision-ready, and tax-ready.',
+            },
+            {
+              title: 'Corporation Tax Preparation Service',
+              description: 'Corporate tax preparation support for entities that need accurate filings and structured documentation.',
+            },
+            {
+              title: 'Small Business Accounting',
+              description: 'Bookkeeping and accounting support tailored to small businesses and owner-managed companies.',
+            },
+            {
+              title: 'Payroll Service',
+              description: 'Payroll support to help manage employee payments, records, and compliance workflows.',
+            },
+          ],
         },
         {
-          title: 'Financial Guidance',
+          slug: 'irs-tax-resolution',
+          title: 'IRS Tax Problem Resolution',
           description:
-            'Financial analysis, reporting, and planning to help you make smarter, data-driven decisions.',
-          href: '/services/financial',
+            'Support for taxpayers facing IRS notices, balances, filing issues, or complex tax problems that need a clear resolution path.',
+          href: '/services/irs-tax-resolution',
+          services: [
+            {
+              title: 'IRS Tax Problem Resolution Services',
+              description: 'Structured support to review IRS issues, understand available options, and define the next steps toward resolution.',
+            },
+          ],
         },
       ],
     },
@@ -228,7 +287,7 @@ export const ui = {
       services: {
         title: 'Servicios - LB & CO Global Advisors',
         description:
-          'Servicios de asesoramiento, valoración y orientación financiera de LB & CO Global Advisors.',
+          'Servicios de preparación de impuestos, contabilidad para negocios, nómina y resolución de problemas fiscales con el IRS de LB & CO Global Advisors.',
       },
       contact: {
         title: 'Contacto - LB & CO Global Advisors',
@@ -284,27 +343,86 @@ export const ui = {
       eyebrow: 'Nuestros servicios',
       pageEyebrow: 'Qué hacemos',
       pageTitle: 'Nuestros servicios',
-      title: 'Soluciones que aportan claridad y confianza',
+      title: 'Servicios fiscales y contables para personas y negocios en el extranjero',
       learnMore: 'Saber más',
       learnMoreAria: 'Saber más sobre',
-      items: [
+      contactCta: 'Hablar con un asesor',
+      detailEyebrow: 'Servicios incluidos',
+      groups: [
         {
-          title: 'Servicios de asesoramiento',
+          slug: 'income-tax',
+          title: 'Preparación de declaraciones de impuestos',
           description:
-            'Asesoramiento estratégico y consultoría empresarial para apoyar el crecimiento, las operaciones y las transacciones.',
-          href: '/services/advisory',
+            'Soporte para declaraciones personales, empresariales, internacionales y de expatriados con foco en claridad y cumplimiento.',
+          href: '/services/income-tax',
+          services: [
+            {
+              title: 'Preparación de declaraciones de impuestos',
+              description: 'Preparación integral de declaraciones federales y estatales aplicables.',
+            },
+            {
+              title: 'Preparación de impuestos personales',
+              description: 'Declaraciones individuales para residentes, no residentes y contribuyentes con factores internacionales.',
+            },
+            {
+              title: 'Preparación de impuestos para negocios',
+              description: 'Soporte fiscal para propietarios y empresas que necesitan información ordenada y precisa.',
+            },
+            {
+              title: 'Preparación para contribuyentes internacionales',
+              description: 'Orientación para ingresos, activos, residencia u obligaciones de reporte internacionales.',
+            },
+            {
+              title: 'Servicios de impuestos para expatriados',
+              description: 'Soporte para estadounidenses en el extranjero y familias con ingresos o exclusiones internacionales.',
+            },
+            {
+              title: 'Reporte de cuentas bancarias extranjeras',
+              description: 'Apoyo con obligaciones de reporte de cuentas extranjeras, incluyendo organización para FBAR.',
+            },
+            {
+              title: 'Planificación fiscal',
+              description: 'Planificación anticipada para reducir sorpresas y tomar mejores decisiones financieras.',
+            },
+          ],
         },
         {
-          title: 'Soporte en valoraciones',
+          slug: 'business-accounting',
+          title: 'Contabilidad para negocios',
           description:
-            'Valoraciones independientes de empresas, inmuebles y activos intangibles realizadas con rigor e integridad.',
-          href: '/services/valuation',
+            'Contabilidad, preparación fiscal corporativa, apoyo para pequeños negocios y servicios de nómina.',
+          href: '/services/business-accounting',
+          services: [
+            {
+              title: 'Servicios de contabilidad para negocios',
+              description: 'Soporte contable continuo para mantener registros claros, útiles y listos para impuestos.',
+            },
+            {
+              title: 'Preparación de impuestos corporativos',
+              description: 'Apoyo en declaraciones corporativas con documentación estructurada y precisa.',
+            },
+            {
+              title: 'Contabilidad para pequeñas empresas',
+              description: 'Bookkeeping y contabilidad adaptados a pequeñas empresas y negocios gestionados por sus dueños.',
+            },
+            {
+              title: 'Servicio de nómina',
+              description: 'Apoyo para gestionar pagos, registros y procesos de nómina con orden y cumplimiento.',
+            },
+          ],
         },
         {
-          title: 'Orientación financiera',
+          slug: 'irs-tax-resolution',
+          title: 'Resolución de problemas fiscales con el IRS',
           description:
-            'Análisis financiero, reporting y planificación para ayudarte a tomar decisiones más inteligentes basadas en datos.',
-          href: '/services/financial',
+            'Soporte para contribuyentes con avisos del IRS, saldos pendientes, declaraciones atrasadas o situaciones fiscales complejas.',
+          href: '/services/irs-tax-resolution',
+          services: [
+            {
+              title: 'Servicios de resolución de problemas fiscales con el IRS',
+              description: 'Revisión de la situación, explicación de opciones disponibles y definición de próximos pasos para resolver el problema.',
+            },
+          ],
         },
       ],
     },
