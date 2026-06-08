@@ -95,11 +95,12 @@ export const ui = {
       eyebrow: 'Limited welcome offer',
       title: 'Your first consultation is free',
       text: 'Click here and tell us your situation. We will help you find the right next step.',
+      close: 'Close free consultation offer',
     },
     hero: {
       ariaLabel: 'Hero',
       kicker: 'About Us',
-      title: ['Americanos', 'Hispanoparlantes', 'en el extranjero'],
+      title: ['Spanish-speaking', 'Americans abroad', 'tax clarity'],
       text:
         'We deliver independent, data-driven advisory and valuation services to help businesses, investors, and professionals make informed decisions across the United States.',
       book: 'Book a Consultation',
@@ -264,11 +265,12 @@ export const ui = {
       eyebrow: 'Oferta de bienvenida',
       title: 'Tu primera consulta es gratuita',
       text: 'Haz click aquí y cuéntanos tu situación. Te ayudamos a encontrar el siguiente paso adecuado.',
+      close: 'Cerrar oferta de primera consulta gratuita',
     },
     hero: {
       ariaLabel: 'Hero',
       kicker: 'Sobre nosotros',
-      title: ['Americanos', 'Hispanoparlantes', 'en el extranjero'],
+      title: ['Americanos', 'hispanoparlantes', 'sin fronteras fiscales'],
       text:
         'Ofrecemos servicios independientes de asesoramiento y valoración basados en datos para ayudar a empresas, inversores y profesionales a tomar decisiones informadas en Estados Unidos.',
       book: 'Reservar una consulta',

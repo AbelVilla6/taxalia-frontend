@@ -65,9 +65,13 @@ const alternateEs = new URL(localizePath('es', basePath), site).toString();
 
       const promoBanner = document.querySelector('.free-consultation-banner') as HTMLElement | null;
       if (promoBanner) {
+        const promoClose = promoBanner.querySelector<HTMLButtonElement>('.free-consultation-close');
         const onPromoScroll = () => {
           promoBanner.classList.toggle('is-hidden', window.scrollY > 24);
         };
+        promoClose?.addEventListener('click', () => {
+          promoBanner.hidden = true;
+        });
         onPromoScroll();
         window.addEventListener('scroll', onPromoScroll, { passive: true });
       }
