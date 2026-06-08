@@ -17,9 +17,9 @@ const { activePage, lang = 'en' } = Astro.props;
 const copy = ui[lang].header;
 const navLinks = [
   { key: 'about' as const, href: '/about' },
-  { key: 'contact' as const, href: '/contact' },
-  { key: 'services' as const, href: '/services' },
   { key: 'blog' as const, href: '/blog' },
+  { key: 'services' as const, href: '/services' },
+  { key: 'contact' as const, href: '/contact' },
 ].map((link) => ({
   ...link,
   href: localizePath(lang, link.href),
@@ -28,8 +28,8 @@ const navLinks = [
 
 const basePath = basePathFromPathname(Astro.url.pathname);
 const languageLinks = [
-  { lang: 'en' as const, href: localizePath('en', basePath) },
-  { lang: 'es' as const, href: localizePath('es', basePath) },
+  { lang: 'en' as const, href: localizePath('en', basePath), flag: '🇺🇸' },
+  { lang: 'es' as const, href: localizePath('es', basePath), flag: '🇪🇸' },
 ];
 ---
 
@@ -71,31 +71,11 @@ const languageLinks = [
             aria-label={copy.switchTo[languageLink.lang]}
             aria-current={lang === languageLink.lang ? 'true' : undefined}
           >
-            {languages[languageLink.lang].label}
+            <span aria-hidden="true" class="lang-flag">{languageLink.flag}</span>
+            <span>{languages[languageLink.lang].label}</span>
           </a>
         ))}
       </div>
-
-      <a href={localizePath(lang, '/contact')} class="btn">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-          <line x1="16" y1="2" x2="16" y2="6"></line>
-          <line x1="8" y1="2" x2="8" y2="6"></line>
-          <line x1="3" y1="10" x2="21" y2="10"></line>
-        </svg>
-        {copy.book}
-      </a>
 
       <!-- Mobile hamburger -->
       <button
@@ -129,11 +109,6 @@ const languageLinks = [
             </a>
           </li>
         ))}
-        <li style="margin-top:1rem;">
-          <a href={localizePath(lang, '/contact')} class="btn" style="width:100%;justify-content:center;">
-            {copy.book}
-          </a>
-        </li>
       </ul>
     </nav>
   </div>
