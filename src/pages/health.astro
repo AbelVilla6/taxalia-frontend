@@ -1,0 +1,611 @@
+---
+const backendBase = (import.meta.env.PUBLIC_CHAT_API_BASE ?? 'http://localhost:4324').replace(/\/+$/, '');
+const checkedAt = new Date().toISOString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Frontend Health | Taxalia</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b1017;
+        --panel: #121b26;
+        --panel-soft: #172333;
+        --text: #eef4f8;
+        --muted: #9fb0bf;
+        --ok: #58d68d;
+        --warn: #f7c948;
+        --bad: #ff6b6b;
+        --line: rgba(255, 255, 255, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(88, 214, 141, 0.14), transparent 32rem),
+          radial-gradient(circle at 80% 0%, rgba(70, 130, 180, 0.16), transparent 28rem),
+          var(--bg);
+        color: var(--text);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      }
+
+      main {
+        width: min(900px, 100%);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: clamp(1.5rem, 4vw, 2.5rem);
+        background: linear-gradient(145deg, rgba(18, 27, 38, 0.96), rgba(12, 18, 27, 0.96));
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+      }
+
+      h1 {
+        margin: 0 0 0.5rem;
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        letter-spacing: -0.06em;
+      }
+
+      .summary {
+        margin: 0 0 2rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1rem;
+        background: var(--panel-soft);
+      }
+
+      .label {
+        margin: 0 0 0.5rem;
+        color: var(--muted);
+        font-size: 0.78rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .value {
+        margin: 0;
+        font-size: 1rem;
+        overflow-wrap: anywhere;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+      }
+
+      .status::before {
+        content: "";
+        width: 0.7rem;
+        height: 0.7rem;
+        border-radius: 50%;
+        background: var(--warn);
+        box-shadow: 0 0 24px var(--warn);
+      }
+
+      [data-state="ok"] .status::before {
+        background: var(--ok);
+        box-shadow: 0 0 24px var(--ok);
+      }
+
+      [data-state="error"] .status::before {
+        background: var(--bad);
+        box-shadow: 0 0 24px var(--bad);
+      }
+
+      pre {
+        margin: 1rem 0 0;
+        max-height: 280px;
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 1rem;
+        background: #070b10;
+        color: #d8e2ea;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      .loading-panel {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 1.25rem;
+        background: var(--panel-soft);
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main data-state="pending">
+      <h1>Health</h1>
+      <p class="summary">
+        Current frontend status, live backend health check, Ollama connectivity, and model ping.
+      </p>
+
+      <div id="health-loading" class="loading-panel" role="status" aria-live="polite">
+        Running health checks… Results will render when every check is complete.
+      </div>
+
+      <div id="health-results" hidden>
+        <section class="grid" aria-label="Service status">
+          <article class="card" data-state="ok">
+            <p class="label">Frontend</p>
+            <p class="value status">OK</p>
+          </article>
+
+          <article class="card" id="backend-card" data-state="pending">
+            <p class="label">Backend</p>
+            <p class="value status" id="backend-status">Checking…</p>
+          </article>
+
+          <article class="card" id="ollama-card" data-state="pending">
+            <p class="label">Ollama</p>
+            <p class="value status" id="ollama-status">Checking…</p>
+          </article>
+
+          <article class="card" id="model-ping-card" data-state="pending">
+            <p class="label">Model Ping</p>
+            <p class="value status" id="model-ping-status">Checking…</p>
+          </article>
+
+          <article class="card" id="advisory-ping-card" data-state="pending">
+            <p class="label">Advisory Ping</p>
+            <p class="value status" id="advisory-ping-status">Checking…</p>
+          </article>
+
+          <article class="card">
+            <p class="label">Backend URL</p>
+            <p class="value">{backendBase}/health</p>
+          </article>
+
+          <article class="card">
+            <p class="label">Ollama URL</p>
+            <p class="value">{backendBase}/health/ollama</p>
+          </article>
+
+          <article class="card">
+            <p class="label">Model Ping URL</p>
+            <p class="value">{backendBase}/chat</p>
+          </article>
+
+          <article class="card">
+            <p class="label">Rendered at</p>
+            <p class="value">{checkedAt}</p>
+          </article>
+        </section>
+
+        <pre id="backend-payload" aria-label="Backend health response">Waiting for backend response…</pre>
+        <pre id="ollama-payload" aria-label="Backend Ollama health response">Waiting for Ollama health response…</pre>
+        <pre id="model-ping-payload" aria-label="Model ping response">Waiting for model ping response…</pre>
+        <pre id="advisory-ping-payload" aria-label="Advisory ping response">Waiting for advisory ping response…</pre>
+      </div>
+    </main>
+
+    <script
+      type="application/json"
+      id="health-config"
+      is:inline
+      set:html={JSON.stringify({
+        backendHealthUrl: `${backendBase}/health`,
+        ollamaHealthUrl: `${backendBase}/health/ollama`,
+        chatUrl: `${backendBase}/chat`,
+        modelPingPrompt: 'debes responder con pong',
+        advisoryPingPrompt: 'asesoria',
+      })}
+    ></script>
+    <script>
+      window.addEventListener('error', (event) => {
+        console.error('[health] window error', {
+          message: event.message,
+          filename: event.filename,
+          lineno: event.lineno,
+          colno: event.colno,
+          error: event.error,
+        });
+      });
+
+      window.addEventListener('unhandledrejection', (event) => {
+        console.error('[health] unhandled rejection', event.reason);
+      });
+
+      const configEl = document.getElementById('health-config');
+      const healthLoading = document.getElementById('health-loading');
+      const healthResults = document.getElementById('health-results');
+      const backendCard = document.getElementById('backend-card');
+      const backendStatus = document.getElementById('backend-status');
+      const backendPayload = document.getElementById('backend-payload');
+      const ollamaCard = document.getElementById('ollama-card');
+      const ollamaStatus = document.getElementById('ollama-status');
+      const ollamaPayload = document.getElementById('ollama-payload');
+      const modelPingCard = document.getElementById('model-ping-card');
+      const modelPingStatus = document.getElementById('model-ping-status');
+      const modelPingPayload = document.getElementById('model-ping-payload');
+      const advisoryPingCard = document.getElementById('advisory-ping-card');
+      const advisoryPingStatus = document.getElementById('advisory-ping-status');
+      const advisoryPingPayload = document.getElementById('advisory-ping-payload');
+
+      async function fetchHealth(url) {
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 5000);
+
+        try {
+          const response = await fetch(url, {
+            headers: { Accept: 'application/json' },
+            signal: controller.signal,
+          });
+          const payload = await response.json().catch(() => null);
+          return { response, payload };
+        } finally {
+          window.clearTimeout(timeout);
+        }
+      }
+
+      function renderHealthResult({ card, status, payloadEl, response, payload }) {
+        const isHealthy = response.ok && payload?.ok === true;
+
+        card.dataset.state = isHealthy ? 'ok' : 'error';
+        status.textContent = isHealthy ? 'OK' : `Unhealthy (${response.status})`;
+        payloadEl.textContent = JSON.stringify(payload ?? { status: response.status }, null, 2);
+      }
+
+      function renderHealthError({ card, status, payloadEl, error }) {
+        card.dataset.state = 'error';
+        status.textContent = 'Unavailable';
+        payloadEl.textContent = JSON.stringify(
+          {
+            ok: false,
+            error: error instanceof Error ? error.message : String(error),
+          },
+          null,
+          2,
+        );
+      }
+
+      function renderStoredResult({ card, status, payloadEl, result }) {
+        card.dataset.state = result.state;
+        status.textContent = result.statusText;
+        payloadEl.textContent = typeof result.payload === 'string'
+          ? result.payload
+          : JSON.stringify(result.payload, null, 2);
+      }
+
+      function parseSseChunk(rawChunk) {
+        const events = [];
+        const lines = rawChunk.split('\n');
+        let data = '';
+
+        const pushData = () => {
+          if (!data) return;
+          try {
+            events.push(JSON.parse(data));
+          } catch {
+            // Ignore malformed SSE payloads.
+          }
+          data = '';
+        };
+
+        for (const line of lines) {
+          const normalizedLine = line.replace(/\r$/, '');
+          if (normalizedLine.startsWith('data:')) {
+            data += normalizedLine.slice(5).trim();
+          } else if (normalizedLine === '') {
+            pushData();
+          }
+        }
+
+        pushData();
+        return events;
+      }
+
+      async function checkBackendHealth() {
+        if (!configEl) return null;
+
+        const config = JSON.parse(configEl.textContent || '{}');
+
+        try {
+          const { response, payload } = await fetchHealth(config.backendHealthUrl);
+          const isHealthy = response.ok && payload?.ok === true;
+
+          return {
+            key: 'backend',
+            state: isHealthy ? 'ok' : 'error',
+            statusText: isHealthy ? 'OK' : `Unhealthy (${response.status})`,
+            payload: payload ?? { status: response.status },
+          };
+        } catch (error) {
+          return {
+            key: 'backend',
+            state: 'error',
+            statusText: 'Unavailable',
+            payload: {
+              ok: false,
+              error: error instanceof Error ? error.message : String(error),
+            },
+          };
+        }
+      }
+
+      async function checkOllamaHealth() {
+        if (!configEl) return null;
+
+        const config = JSON.parse(configEl.textContent || '{}');
+
+        try {
+          const { response, payload } = await fetchHealth(config.ollamaHealthUrl);
+          const isHealthy = response.ok && payload?.ok === true;
+          return {
+            key: 'ollama',
+            state: isHealthy ? 'ok' : 'error',
+            statusText: isHealthy ? 'OK' : `Unhealthy (${response.status})`,
+            payload: payload ?? { status: response.status },
+          };
+        } catch (error) {
+          return {
+            key: 'ollama',
+            state: 'error',
+            statusText: 'Unavailable',
+            payload: {
+              ok: false,
+              error: error instanceof Error ? error.message : String(error),
+            },
+          };
+        }
+      }
+
+      async function checkChatPing({ key, prompt, requestIdPrefix }) {
+        if (!configEl) return null;
+
+        const config = JSON.parse(configEl.textContent || '{}');
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 30000);
+        const requestId = `${requestIdPrefix}-${crypto.randomUUID()}`;
+        let modelText = '';
+
+        console.log('[health] chat ping start', {
+          prompt,
+          requestId,
+          url: config.chatUrl,
+        });
+
+        try {
+          const response = await fetch(config.chatUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'text/event-stream',
+              'X-Request-Id': requestId,
+            },
+            body: JSON.stringify({
+              messages: [{ role: 'user', content: prompt }],
+              lang: 'es',
+            }),
+            signal: controller.signal,
+          });
+
+          console.log('[health] chat ping response headers', {
+            prompt,
+            requestId,
+            ok: response.ok,
+            status: response.status,
+            contentType: response.headers.get('content-type'),
+          });
+
+          if (!response.ok || !response.body) {
+            const payload = await response.json().catch(() => ({ status: response.status }));
+            console.log('[health] chat ping non-ok payload', { prompt, requestId, payload });
+            return {
+              key,
+              state: 'error',
+              statusText: `Unhealthy (${response.status})`,
+              payload,
+            };
+          }
+
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = '';
+
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+
+            console.log('[health] chat ping chunk', {
+              prompt,
+              requestId,
+              bufferChars: buffer.length,
+            });
+
+            const parts = buffer.split('\n\n');
+            buffer = parts.pop() ?? '';
+
+            for (const part of parts) {
+              for (const event of parseSseChunk(part)) {
+                console.log('[health] chat ping event', { prompt, requestId, event });
+
+                if (typeof event.delta === 'string') {
+                  modelText += event.delta;
+                }
+
+                if (event.error) {
+                  return {
+                    key,
+                    state: 'error',
+                    statusText: event.error.code ?? 'Stream error',
+                    payload: event,
+                  };
+                }
+
+                if (event.done) {
+                  const hasModelResponse = event.agentResponse === true;
+                  const payload = {
+                      prompt,
+                      response: modelText.trim(),
+                      agentResponse: event.agentResponse === true,
+                      done: true,
+                      requestId: event.requestId,
+                  };
+
+                  console.log('[health] chat ping done', {
+                    prompt,
+                    requestId,
+                    agentResponse: event.agentResponse === true,
+                    responseChars: modelText.trim().length,
+                  });
+                  return {
+                    key,
+                    state: hasModelResponse ? 'ok' : 'error',
+                    statusText: hasModelResponse ? 'OK' : 'Backend fallback',
+                    payload,
+                  };
+                }
+              }
+            }
+          }
+
+          const payload = { prompt, response: modelText.trim(), agentResponse: false };
+          console.log('[health] chat ping ended without done', {
+            prompt,
+            requestId,
+            responseChars: modelText.trim().length,
+          });
+          return {
+            key,
+            state: 'error',
+            statusText: modelText.trim().length > 0 ? 'Partial response' : 'Empty response',
+            payload,
+          };
+        } catch (error) {
+          console.error('[health] chat ping error', { prompt, requestId, error });
+          return {
+            key,
+            state: 'error',
+            statusText: 'Unavailable',
+            payload: {
+              ok: false,
+              error: error instanceof Error ? error.message : String(error),
+            },
+          };
+        } finally {
+          window.clearTimeout(timeout);
+          console.log('[health] chat ping finished', {
+            prompt,
+            requestId,
+          });
+        }
+      }
+
+      async function checkModelPing() {
+        if (!configEl) return;
+        const config = JSON.parse(configEl.textContent || '{}');
+        return checkChatPing({
+          key: 'modelPing',
+          prompt: config.modelPingPrompt,
+          requestIdPrefix: 'health-model-ping',
+        });
+      }
+
+      async function checkAdvisoryPing() {
+        if (!configEl) return;
+        const config = JSON.parse(configEl.textContent || '{}');
+        return checkChatPing({
+          key: 'advisoryPing',
+          prompt: config.advisoryPingPrompt,
+          requestIdPrefix: 'health-advisory-ping',
+        });
+      }
+
+      function renderAllResults(results) {
+        const byKey = new Map(results.filter(Boolean).map((result) => [result.key, result]));
+        const expectedKeys = ['backend', 'ollama', 'modelPing', 'advisoryPing'];
+        const missingKeys = expectedKeys.filter((key) => !byKey.has(key));
+
+        if (missingKeys.length > 0) {
+          console.warn('[health] render blocked; missing results', { missingKeys, results });
+          return;
+        }
+
+        const targets = {
+          backend: { card: backendCard, status: backendStatus, payloadEl: backendPayload },
+          ollama: { card: ollamaCard, status: ollamaStatus, payloadEl: ollamaPayload },
+          modelPing: { card: modelPingCard, status: modelPingStatus, payloadEl: modelPingPayload },
+          advisoryPing: { card: advisoryPingCard, status: advisoryPingStatus, payloadEl: advisoryPingPayload },
+        };
+
+        for (const [key, target] of Object.entries(targets)) {
+          const result = byKey.get(key);
+          if (!result || !target.card || !target.status || !target.payloadEl) continue;
+          renderStoredResult({ ...target, result });
+        }
+
+        if (healthLoading) healthLoading.hidden = true;
+        if (healthResults) healthResults.hidden = false;
+      }
+
+      function resultFromSettled(key, settled) {
+        if (settled.status === 'fulfilled' && settled.value) return settled.value;
+
+        return {
+          key,
+          state: 'error',
+          statusText: 'Unavailable',
+          payload: {
+            ok: false,
+            error: settled.status === 'rejected'
+              ? settled.reason instanceof Error
+                ? settled.reason.message
+                : String(settled.reason)
+              : 'Health check returned no result.',
+          },
+        };
+      }
+
+      async function runHealthChecks() {
+        console.log('[health] checks start');
+        if (healthResults) healthResults.hidden = true;
+        if (healthLoading) healthLoading.hidden = false;
+
+        const checks = [
+          ['backend', checkBackendHealth()],
+          ['ollama', checkOllamaHealth()],
+          ['modelPing', checkModelPing()],
+          ['advisoryPing', checkAdvisoryPing()],
+        ];
+
+        const settled = await Promise.allSettled(checks.map(([, promise]) => promise));
+        const results = settled.map((entry, index) => resultFromSettled(checks[index][0], entry));
+
+        console.log('[health] checks settled', results);
+        renderAllResults(results);
+        console.log('[health] checks complete');
+      }
+
+      void runHealthChecks();
+    </script>
+  </body>
+</html>
