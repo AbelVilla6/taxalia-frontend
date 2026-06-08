@@ -26,6 +26,8 @@ interface ServerSseEvent {
 
 const DEFAULT_TIMEOUT_MS = 30_000;
 const CONFIG_WAIT_MS = 1_000;
+const TAXALIA_OPTIONS_BLOCK_RE = /```taxalia-options-json\s*[\s\S]*?```/gi;
+const TAXALIA_OPTIONS_INCOMPLETE_BLOCK_RE = /```taxalia-options-json\s*[\s\S]*$/i;
 
 function isChatConfig(value: unknown): value is ChatConfig {
   if (!value || typeof value !== 'object') return false;
@@ -40,6 +42,13 @@ function escapeHtml(text: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+export function stripTaxaliaOptionsBlocks(text: string): string {
+  return text
+    .replace(TAXALIA_OPTIONS_BLOCK_RE, '')
+    .replace(TAXALIA_OPTIONS_INCOMPLETE_BLOCK_RE, '')
+    .trimEnd();
 }
 
 function waitForElement<T extends Element>(selector: string, timeoutMs: number): Promise<T | null> {
@@ -266,6 +275,7 @@ export function init(options: InitOptions = {}): void {
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
+        let rawAssistantContent = '';
         let gotAnyDelta = false;
 
         // eslint-disable-next-line no-constant-condition
@@ -280,7 +290,9 @@ export function init(options: InitOptions = {}): void {
           for (const part of parts) {
             for (const event of parseSseChunk(part)) {
               if (typeof event.delta === 'string' && event.delta.length > 0) {
-                assistantBubble.textContent += event.delta;
+                rawAssistantContent += event.delta;
+                assistantMsg.content = stripTaxaliaOptionsBlocks(rawAssistantContent);
+                assistantBubble.textContent = assistantMsg.content;
                 messagesEl.scrollTop = messagesEl.scrollHeight;
                 gotAnyDelta = true;
               }
