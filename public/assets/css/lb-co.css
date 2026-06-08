@@ -302,13 +302,21 @@
 }
 
 .free-consultation-banner {
-  background:
-    radial-gradient(circle at 12% 25%, rgba(255, 255, 255, 0.85), transparent 24%),
-    radial-gradient(circle at 88% 10%, rgba(200, 161, 90, 0.34), transparent 28%),
-    linear-gradient(135deg, #fbf3df 0%, #f2dca5 48%, #d9ad58 100%);
-  padding: clamp(1.15rem, 2.8vw, 2.1rem) 0;
-  position: relative;
-  z-index: 2;
+  position: fixed;
+  top: calc(var(--header-h, 86px) + 1rem);
+  left: 0;
+  right: 0;
+  z-index: 80;
+  pointer-events: none;
+  transform: translateY(0);
+  opacity: 1;
+  transition: opacity 220ms ease, transform 220ms ease, visibility 220ms ease;
+}
+
+.free-consultation-banner.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-0.75rem);
 }
 
 .free-consultation-card {
@@ -320,13 +328,14 @@
   text-decoration: none;
   border: 1px solid rgba(18, 54, 68, 0.14);
   border-radius: var(--radius-lg);
-  padding: clamp(1.25rem, 3vw, 2rem);
+  padding: clamp(0.9rem, 2vw, 1.25rem);
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.34)),
     rgba(255, 255, 255, 0.52);
   box-shadow: 0 24px 60px rgba(76, 49, 14, 0.18), inset 0 1px 0 rgba(255,255,255,0.62);
   overflow: hidden;
   position: relative;
+  pointer-events: auto;
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
 }
 
@@ -351,12 +360,12 @@
 .free-consultation-badge {
   display: grid;
   place-items: center;
-  width: clamp(4.25rem, 8vw, 5.5rem);
-  height: clamp(4.25rem, 8vw, 5.5rem);
+  width: clamp(3.35rem, 6vw, 4.2rem);
+  height: clamp(3.35rem, 6vw, 4.2rem);
   border-radius: 50%;
   color: #fff;
   background: linear-gradient(135deg, var(--color-primary-dark), #245468);
-  font-size: clamp(0.8rem, 1.4vw, 1rem);
+  font-size: clamp(0.68rem, 1vw, 0.78rem);
   font-weight: 900;
   letter-spacing: 0.08em;
   box-shadow: 0 16px 34px rgba(18, 54, 68, 0.28);
@@ -372,7 +381,7 @@
 
 .free-consultation-eyebrow {
   color: var(--color-primary);
-  font-size: clamp(0.78rem, 1.2vw, 0.95rem);
+  font-size: clamp(0.68rem, 1vw, 0.8rem);
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -381,7 +390,7 @@
 .free-consultation-title {
   display: block;
   font-family: var(--font-heading);
-  font-size: clamp(1.85rem, 4vw, 3.25rem);
+  font-size: clamp(1.35rem, 2.8vw, 2.15rem);
   font-weight: 700;
   line-height: 1.05;
 }
@@ -389,19 +398,19 @@
 .free-consultation-text {
   display: block;
   color: rgba(18, 54, 68, 0.76);
-  font-size: clamp(0.98rem, 1.6vw, 1.15rem);
+  font-size: clamp(0.82rem, 1.2vw, 0.95rem);
 }
 
 .free-consultation-arrow {
   display: grid;
   place-items: center;
-  width: clamp(2.75rem, 5vw, 3.5rem);
-  height: clamp(2.75rem, 5vw, 3.5rem);
+  width: clamp(2.2rem, 4vw, 2.7rem);
+  height: clamp(2.2rem, 4vw, 2.7rem);
   border-radius: 50%;
   color: #fff;
   background: var(--color-primary-dark);
   font-weight: 800;
-  font-size: 1.35rem;
+  font-size: 1.05rem;
   z-index: 1;
 }
 
