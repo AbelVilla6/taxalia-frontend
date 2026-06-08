@@ -100,7 +100,7 @@ export const ui = {
     hero: {
       ariaLabel: 'Hero',
       kicker: 'About Us',
-      title: ['Spanish-speaking', 'Americans abroad', 'tax clarity'],
+      title: ['Tax guidance for', 'Spanish‑speaking Americans', 'living abroad'],
       text:
         'We deliver independent, data-driven advisory and valuation services to help businesses, investors, and professionals make informed decisions across the United States.',
       book: 'Book a Consultation',
@@ -270,7 +270,7 @@ export const ui = {
     hero: {
       ariaLabel: 'Hero',
       kicker: 'Sobre nosotros',
-      title: ['Americanos', 'hispanoparlantes', 'sin fronteras fiscales'],
+      title: ['Orientación fiscal para', 'americanos hispanoparlantes', 'en el extranjero'],
       text:
         'Ofrecemos servicios independientes de asesoramiento y valoración basados en datos para ayudar a empresas, inversores y profesionales a tomar decisiones informadas en Estados Unidos.',
       book: 'Reservar una consulta',
