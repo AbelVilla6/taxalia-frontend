@@ -143,11 +143,22 @@ function normalizeOption(option: unknown): ChatOption | null {
 }
 
 function parseAssistantContent(rawText: string): ParsedAssistantContent {
-  const blockPattern = /```taxalia-options-json\s*\n([\s\S]*?)```/g;
+  const blockPattern = /```taxalia-options-json\s*\n?([\s\S]*?)```/gi;
+  const incompleteBlockPattern = /```taxalia-options-json\s*\n?([\s\S]*)$/i;
+  const optionPayloads: string[] = [];
+  const withoutCompleteBlocks = rawText.replace(blockPattern, (_block, payload: string) => {
+    optionPayloads.push(payload);
+    return '';
+  });
+  const incompleteMatch = incompleteBlockPattern.exec(withoutCompleteBlocks);
+  if (incompleteMatch?.[1]) {
+    optionPayloads.push(incompleteMatch[1]);
+  }
+
   let options: ChatOption[] = [];
-  for (const match of rawText.matchAll(blockPattern)) {
+  for (const payload of optionPayloads) {
     try {
-      const parsed: unknown = JSON.parse(match[1].trim());
+      const parsed: unknown = JSON.parse(payload.trim());
       if (!parsed || typeof parsed !== 'object') continue;
       const value = parsed as { options?: unknown };
       if (!Array.isArray(value.options)) continue;
