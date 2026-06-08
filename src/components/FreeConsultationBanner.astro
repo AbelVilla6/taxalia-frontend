@@ -12,12 +12,16 @@ const copy = ui[lang].homeBanner;
 <section class="free-consultation-banner" aria-labelledby="free-consultation-title">
   <div class="container">
     <a class="free-consultation-card" href={localizePath(lang, '/contact')}>
-      <span class="free-consultation-badge" aria-hidden="true">✦</span>
+      <span class="free-consultation-glow" aria-hidden="true"></span>
+      <span class="free-consultation-badge" aria-hidden="true">
+        <span>FREE</span>
+      </span>
       <span class="free-consultation-copy">
         <span class="free-consultation-eyebrow">{copy.eyebrow}</span>
         <span id="free-consultation-title" class="free-consultation-title">{copy.title}</span>
         <span class="free-consultation-text">{copy.text}</span>
       </span>
+      <span class="free-consultation-pill" aria-hidden="true">30 min</span>
       <span class="free-consultation-arrow" aria-hidden="true">↗</span>
     </a>
   </div>

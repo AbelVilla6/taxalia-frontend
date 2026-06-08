@@ -312,7 +312,7 @@
 
 .free-consultation-card {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
   gap: clamp(0.8rem, 2vw, 1.25rem);
   color: #fff;
@@ -320,9 +320,23 @@
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
   padding: 0.85rem 1.1rem;
-  background: rgba(255, 255, 255, 0.09);
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.06)),
+    rgba(255, 255, 255, 0.09);
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255,255,255,0.14);
+  overflow: hidden;
+  position: relative;
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.free-consultation-glow {
+  position: absolute;
+  inset: -80% auto auto 10%;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(247, 223, 170, 0.36), transparent 68%);
+  pointer-events: none;
 }
 
 .free-consultation-card:hover,
@@ -336,18 +350,23 @@
 .free-consultation-badge {
   display: grid;
   place-items: center;
-  width: 2.6rem;
-  height: 2.6rem;
+  width: 3.25rem;
+  height: 3.25rem;
   border-radius: 50%;
   color: var(--color-primary-dark);
   background: linear-gradient(135deg, #f7dfaa, var(--color-primary));
-  font-size: 1.15rem;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   box-shadow: 0 10px 22px rgba(200, 161, 90, 0.22);
+  transform: rotate(-8deg);
+  z-index: 1;
 }
 
 .free-consultation-copy {
   display: grid;
   gap: 0.15rem;
+  z-index: 1;
 }
 
 .free-consultation-eyebrow {
@@ -381,6 +400,63 @@
   color: var(--color-primary-dark);
   background: #fff;
   font-weight: 800;
+  z-index: 1;
+}
+
+.free-consultation-pill {
+  border: 1px solid rgba(247, 223, 170, 0.45);
+  border-radius: 999px;
+  color: #f7dfaa;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 0.45rem 0.7rem;
+  text-transform: uppercase;
+  z-index: 1;
+}
+
+.flag-icon {
+  position: relative;
+  display: inline-block;
+  width: 24px;
+  height: 16px;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.flag-icon-us {
+  background: repeating-linear-gradient(
+    to bottom,
+    #b22234 0,
+    #b22234 1.23px,
+    #fff 1.23px,
+    #fff 2.46px
+  );
+}
+
+.flag-icon-us span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 8.6px;
+  background: #3c3b6e;
+}
+
+.flag-icon-es {
+  background: linear-gradient(to bottom, #aa151b 0 25%, #f1bf00 25% 75%, #aa151b 75% 100%);
+}
+
+.flag-icon-es span {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 3px;
+  height: 5px;
+  border-radius: 1px;
+  background: #aa151b;
 }
 
 .cta-grid {
