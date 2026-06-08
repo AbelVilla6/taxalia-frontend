@@ -303,27 +303,28 @@
 
 .free-consultation-banner {
   background:
-    radial-gradient(circle at 18% 20%, rgba(200, 161, 90, 0.28), transparent 26%),
-    linear-gradient(135deg, rgba(18, 54, 68, 0.98), rgba(9, 31, 42, 0.94));
-  padding: 0.75rem 0;
+    radial-gradient(circle at 12% 25%, rgba(255, 255, 255, 0.85), transparent 24%),
+    radial-gradient(circle at 88% 10%, rgba(200, 161, 90, 0.34), transparent 28%),
+    linear-gradient(135deg, #fbf3df 0%, #f2dca5 48%, #d9ad58 100%);
+  padding: clamp(1.15rem, 2.8vw, 2.1rem) 0;
   position: relative;
   z-index: 2;
 }
 
 .free-consultation-card {
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: clamp(0.8rem, 2vw, 1.25rem);
-  color: #fff;
+  color: var(--color-primary-dark);
   text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 999px;
-  padding: 0.85rem 1.1rem;
+  border: 1px solid rgba(18, 54, 68, 0.14);
+  border-radius: var(--radius-lg);
+  padding: clamp(1.25rem, 3vw, 2rem);
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.06)),
-    rgba(255, 255, 255, 0.09);
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255,255,255,0.14);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.34)),
+    rgba(255, 255, 255, 0.52);
+  box-shadow: 0 24px 60px rgba(76, 49, 14, 0.18), inset 0 1px 0 rgba(255,255,255,0.62);
   overflow: hidden;
   position: relative;
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
@@ -342,23 +343,23 @@
 .free-consultation-card:hover,
 .free-consultation-card:focus-visible {
   transform: translateY(-2px);
-  border-color: rgba(200, 161, 90, 0.75);
-  background: rgba(255, 255, 255, 0.14);
-  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.24), 0 0 0 4px rgba(200, 161, 90, 0.08);
+  border-color: rgba(18, 54, 68, 0.28);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 28px 70px rgba(76, 49, 14, 0.24), 0 0 0 5px rgba(18, 54, 68, 0.06);
 }
 
 .free-consultation-badge {
   display: grid;
   place-items: center;
-  width: 3.25rem;
-  height: 3.25rem;
+  width: clamp(4.25rem, 8vw, 5.5rem);
+  height: clamp(4.25rem, 8vw, 5.5rem);
   border-radius: 50%;
-  color: var(--color-primary-dark);
-  background: linear-gradient(135deg, #f7dfaa, var(--color-primary));
-  font-size: 0.65rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary-dark), #245468);
+  font-size: clamp(0.8rem, 1.4vw, 1rem);
   font-weight: 900;
   letter-spacing: 0.08em;
-  box-shadow: 0 10px 22px rgba(200, 161, 90, 0.22);
+  box-shadow: 0 16px 34px rgba(18, 54, 68, 0.28);
   transform: rotate(-8deg);
   z-index: 1;
 }
@@ -371,7 +372,7 @@
 
 .free-consultation-eyebrow {
   color: var(--color-primary);
-  font-size: 0.68rem;
+  font-size: clamp(0.78rem, 1.2vw, 0.95rem);
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -380,38 +381,27 @@
 .free-consultation-title {
   display: block;
   font-family: var(--font-heading);
-  font-size: clamp(1.05rem, 1.8vw, 1.45rem);
-  font-weight: 600;
-  line-height: 1.2;
+  font-size: clamp(1.85rem, 4vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.05;
 }
 
 .free-consultation-text {
   display: block;
-  color: rgba(255, 255, 255, 0.78);
-  font-size: var(--text-xs);
+  color: rgba(18, 54, 68, 0.76);
+  font-size: clamp(0.98rem, 1.6vw, 1.15rem);
 }
 
 .free-consultation-arrow {
   display: grid;
   place-items: center;
-  width: 2rem;
-  height: 2rem;
+  width: clamp(2.75rem, 5vw, 3.5rem);
+  height: clamp(2.75rem, 5vw, 3.5rem);
   border-radius: 50%;
-  color: var(--color-primary-dark);
-  background: #fff;
+  color: #fff;
+  background: var(--color-primary-dark);
   font-weight: 800;
-  z-index: 1;
-}
-
-.free-consultation-pill {
-  border: 1px solid rgba(247, 223, 170, 0.45);
-  border-radius: 999px;
-  color: #f7dfaa;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  padding: 0.45rem 0.7rem;
-  text-transform: uppercase;
+  font-size: 1.35rem;
   z-index: 1;
 }
 
