@@ -75,7 +75,7 @@ export const ui = {
       homeLabel: 'LB & CO Global Advisors Home',
       navLabel: 'Main navigation',
       mobileNavLabel: 'Mobile navigation',
-      menu: 'Menu',
+      menu: 'Americanos Hispanoparlantes en el extranjero',
       openMenu: 'Open menu',
       closeMenu: 'Close menu',
       languageSelector: 'Language selector',
@@ -90,6 +90,12 @@ export const ui = {
         blog: 'Blog',
       },
       book: 'Book a Consultation',
+    },
+    homeBanner: {
+      eyebrow: 'Free first consultation',
+      title: 'Start with a complimentary first consultation',
+      text: 'Tell us what you need and we will guide you toward the right next step.',
+      action: 'Contact us',
     },
     hero: {
       ariaLabel: 'Hero',
@@ -239,7 +245,7 @@ export const ui = {
       homeLabel: 'Inicio de LB & CO Global Advisors',
       navLabel: 'Navegación principal',
       mobileNavLabel: 'Navegación móvil',
-      menu: 'Menú',
+      menu: 'Americanos Hispanoparlantes en el extranjero',
       openMenu: 'Abrir menú',
       closeMenu: 'Cerrar menú',
       languageSelector: 'Selector de idioma',
@@ -254,6 +260,12 @@ export const ui = {
         blog: 'Blog',
       },
       book: 'Reservar una consulta',
+    },
+    homeBanner: {
+      eyebrow: 'Primera consulta gratuita',
+      title: 'Empieza con una primera consulta sin coste',
+      text: 'Cuéntanos qué necesitas y te orientaremos hacia el siguiente paso adecuado.',
+      action: 'Contactar',
     },
     hero: {
       ariaLabel: 'Hero',

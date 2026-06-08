@@ -1,0 +1,21 @@
+---
+import { localizePath, ui, type Lang } from '../i18n';
+
+export interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'en' } = Astro.props;
+const copy = ui[lang].homeBanner;
+---
+
+<section class="free-consultation-banner" aria-labelledby="free-consultation-title">
+  <div class="container">
+    <a class="free-consultation-card" href={localizePath(lang, '/contact')}>
+      <span class="free-consultation-eyebrow">{copy.eyebrow}</span>
+      <span id="free-consultation-title" class="free-consultation-title">{copy.title}</span>
+      <span class="free-consultation-text">{copy.text}</span>
+      <span class="free-consultation-action">{copy.action} <span aria-hidden="true">&rarr;</span></span>
+    </a>
+  </div>
+</section>

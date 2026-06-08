@@ -301,6 +301,56 @@
   pointer-events: none;
 }
 
+.free-consultation-banner {
+  background: linear-gradient(135deg, rgba(18, 54, 68, 0.96), rgba(18, 54, 68, 0.84));
+  padding: clamp(1rem, 2vw, 1.5rem) 0;
+}
+
+.free-consultation-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2rem);
+  color: #fff;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-lg);
+  padding: clamp(1rem, 3vw, 1.4rem);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.16);
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.free-consultation-card:hover,
+.free-consultation-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(200, 161, 90, 0.75);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.free-consultation-eyebrow,
+.free-consultation-action {
+  color: var(--color-primary);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.free-consultation-title {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: clamp(1.15rem, 2vw, 1.7rem);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.free-consultation-text {
+  display: block;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: var(--text-sm);
+}
+
 .cta-grid {
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -563,6 +613,11 @@
   .cta-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+  }
+
+  .free-consultation-card {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
   }
 }
 
