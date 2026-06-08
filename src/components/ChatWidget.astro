@@ -28,7 +28,18 @@ const apiBase = (import.meta.env.PUBLIC_CHAT_API_BASE ?? 'http://localhost:4324'
         </p>
       </div>
     </div>
-    <button id="chat-close" class="chat-close" aria-label={copy.close} type="button">&times;</button>
+    <div class="chat-window-actions">
+      <button
+        id="chat-resize"
+        class="chat-resize"
+        aria-label="Expand chat"
+        aria-expanded="false"
+        type="button"
+      >
+        ⤢
+      </button>
+      <button id="chat-close" class="chat-close" aria-label={copy.close} type="button">&times;</button>
+    </div>
   </div>
 
   <div class="chat-widget-body">
@@ -37,7 +48,7 @@ const apiBase = (import.meta.env.PUBLIC_CHAT_API_BASE ?? 'http://localhost:4324'
         <p class="chat-msg-bubble">{copy.bubble}</p>
       </div>
     </div>
-
+    <p id="chat-typing" class="chat-typing" hidden>{copy.typing}</p>
     <form id="chat-form" class="chat-input" autocomplete="off">
       <label for="chat-text" class="visually-hidden">{copy.sendAria}</label>
       <input
@@ -60,7 +71,7 @@ const apiBase = (import.meta.env.PUBLIC_CHAT_API_BASE ?? 'http://localhost:4324'
       <a class="chat-handoff" href={localizePath(lang, '/contact')}>{copy.humanHandoff}</a>
     </div>
 
-    <p id="chat-typing" class="chat-typing" hidden>{copy.typing}</p>
+    
     <p id="chat-error" class="chat-error" role="alert" hidden></p>
   </div>
 

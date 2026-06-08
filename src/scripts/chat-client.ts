@@ -9,6 +9,17 @@ export interface ChatMessage {
   warning?: string;
 }
 
+interface ChatOption {
+  id: string;
+  label: string;
+  message: string;
+}
+
+interface ParsedAssistantContent {
+  markdown: string;
+  options: ChatOption[];
+}
+
 export interface InitOptions {
   mount?: string;
   config?: string;
@@ -40,6 +51,159 @@ function escapeHtml(text: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+function isSafeHref(raw: string): boolean {
+  if (raw.startsWith('/') && !raw.startsWith('//')) return true;
+  if (raw.startsWith('#')) return true;
+  try {
+    const url = new URL(raw, window.location.origin);
+    return ['http:', 'https:', 'mailto:'].includes(url.protocol);
+  } catch {
+    return false;
+  }
+}
+
+function renderInlineMarkdown(text: string): string {
+  const codeSpans: string[] = [];
+  let output = escapeHtml(text);
+
+  output = output.replace(/`([^`]+)`/g, (_, code: string) => {
+    const token = `\u0000CODE${codeSpans.length}\u0000`;
+    codeSpans.push(`<code>${escapeHtml(code)}</code>`);
+    return token;
+  });
+
+  output = output.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label: string, href: string) => {
+    if (!isSafeHref(href)) return label;
+    const safeHref = escapeHtml(href);
+    return `<a href="${safeHref}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+  });
+
+  output = output.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  output = output.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, (_, prefix: string, value: string) => {
+    return `${prefix}<em>${value}</em>`;
+  });
+  output = output.replace(/(^|[^_])_([^_\n]+)_(?!_)/g, (_, prefix: string, value: string) => {
+    return `${prefix}<em>${value}</em>`;
+  });
+
+  return output.replace(/\u0000CODE(\d+)\u0000/g, (_, index: string) => codeSpans[Number(index)] ?? '');
+}
+
+function renderMarkdown(markdown: string): DocumentFragment {
+  const fragment = document.createDocumentFragment();
+  const text = markdown.replace(/\r\n/g, '\n').trim();
+
+  if (!text) return fragment;
+
+  const blocks = text.split(/\n{2,}/);
+
+  for (const rawBlock of blocks) {
+    const block = rawBlock.trim();
+    if (!block) continue;
+
+    const lines = block.split('\n').map((line) => line.trimEnd());
+    const listItems = lines.filter((line) => line.length > 0);
+    const isBulletList = listItems.length > 0 && listItems.every((line) => /^[-*+]\s+/.test(line));
+    const isOrderedList = listItems.length > 0 && listItems.every((line) => /^\d+[.)]\s+/.test(line));
+
+    if (isBulletList || isOrderedList) {
+      const listEl = document.createElement(isOrderedList ? 'ol' : 'ul');
+      for (const line of listItems) {
+        const item = document.createElement('li');
+        item.innerHTML = renderInlineMarkdown(line.replace(/^([-*+]|\d+[.)])\s+/, ''));
+        listEl.appendChild(item);
+      }
+      fragment.appendChild(listEl);
+      continue;
+    }
+
+    const paragraph = document.createElement('p');
+    paragraph.innerHTML = lines.map((line) => renderInlineMarkdown(line)).join('<br>');
+    fragment.appendChild(paragraph);
+  }
+
+  return fragment;
+}
+
+function normalizeOption(option: unknown): ChatOption | null {
+  if (!option || typeof option !== 'object') return null;
+  const value = option as Record<string, unknown>;
+  if (typeof value.id !== 'string' || typeof value.label !== 'string' || typeof value.message !== 'string') return null;
+
+  const id = value.id.trim();
+  const label = value.label.trim();
+  const message = value.message.trim();
+
+  if (!id || !label || !message) return null;
+  return { id, label, message };
+}
+
+function parseAssistantContent(rawText: string): ParsedAssistantContent {
+  const blockPattern = /```taxalia-options-json\s*\n([\s\S]*?)```/g;
+  const blocksToRemove: string[] = [];
+  let options: ChatOption[] = [];
+  for (const match of rawText.matchAll(blockPattern)) {
+    try {
+      const parsed: unknown = JSON.parse(match[1].trim());
+      if (!parsed || typeof parsed !== 'object') continue;
+      const value = parsed as { options?: unknown };
+      if (!Array.isArray(value.options)) continue;
+      const normalized = value.options.map(normalizeOption).filter((item): item is ChatOption => item !== null);
+      if (normalized.length > 0) {
+        options = normalized;
+        blocksToRemove.push(match[0]);
+      }
+    } catch {
+      // Ignore invalid option payloads and continue rendering the visible text.
+    }
+  }
+
+  let visibleMarkdown = rawText;
+  for (const block of blocksToRemove) {
+    visibleMarkdown = visibleMarkdown.replace(block, '');
+  }
+
+  return {
+    markdown: visibleMarkdown.trim(),
+    options,
+  };
+}
+
+function renderAssistantMessage(
+  assistantBubble: HTMLElement,
+  assistantEl: HTMLElement,
+  onOptionSelected: (message: string) => void,
+  rawText: string,
+): ParsedAssistantContent {
+  const parsed = parseAssistantContent(rawText);
+  assistantBubble.replaceChildren(renderMarkdown(parsed.markdown));
+
+  const existingOptions = assistantEl.querySelector<HTMLElement>('.chat-msg-options');
+  if (existingOptions) existingOptions.remove();
+
+  if (parsed.options.length > 0) {
+    const optionsEl = document.createElement('div');
+    optionsEl.className = 'chat-msg-options';
+
+    for (const option of parsed.options) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'chat-msg-option';
+      button.textContent = option.label;
+      button.dataset.message = option.label;
+      button.dataset.optionId = option.id;
+      button.addEventListener('click', () => {
+        onOptionSelected(option.label);
+      });
+      optionsEl.appendChild(button);
+    }
+
+    assistantEl.appendChild(optionsEl);
+  }
+
+  return parsed;
 }
 
 function waitForElement<T extends Element>(selector: string, timeoutMs: number): Promise<T | null> {
@@ -110,11 +274,12 @@ export function init(options: InitOptions = {}): void {
     const inputEl = widget.querySelector<HTMLInputElement>('#chat-text');
     const sendEl = widget.querySelector<HTMLButtonElement>('#chat-send');
     const closeEl = widget.querySelector<HTMLButtonElement>('#chat-close');
+    const resizeEl = widget.querySelector<HTMLButtonElement>('#chat-resize');
     const launcherEl = document.querySelector<HTMLButtonElement>('#chat-launcher');
     const typingEl = widget.querySelector<HTMLElement>('#chat-typing');
     const errorEl = widget.querySelector<HTMLElement>('#chat-error');
 
-    if (!messagesEl || !formEl || !inputEl || !sendEl || !closeEl || !launcherEl || !typingEl || !errorEl) {
+    if (!messagesEl || !formEl || !inputEl || !sendEl || !closeEl || !resizeEl || !launcherEl || !typingEl || !errorEl) {
       console.error('[chat-client] required widget sub-elements missing');
       return;
     }
@@ -145,7 +310,7 @@ export function init(options: InitOptions = {}): void {
     const appendMessage = (msg: ChatMessage): HTMLElement => {
       const el = document.createElement('div');
       el.className = `chat-msg chat-msg--${msg.role}`;
-      const bubble = document.createElement('p');
+      const bubble = document.createElement('div');
       bubble.className = 'chat-msg-bubble';
       bubble.textContent = msg.content;
       el.appendChild(bubble);
@@ -161,16 +326,19 @@ export function init(options: InitOptions = {}): void {
       }
     };
 
+    const setExpanded = (expanded: boolean): void => {
+      widget.classList.toggle('is-expanded', expanded);
+      resizeEl.setAttribute('aria-expanded', String(expanded));
+      resizeEl.setAttribute('aria-label', expanded ? 'Shrink chat' : 'Expand chat');
+      resizeEl.textContent = expanded ? '⤡' : '⤢';
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    };
+
     const cancelActive = (): void => {
       if (!active) return;
       window.clearTimeout(active.timeoutId);
       active.controller.abort();
       active = null;
-    };
-
-    const resetAssistant = (assistantEl: HTMLElement): void => {
-      const bubble = assistantEl.querySelector<HTMLElement>('.chat-msg-bubble');
-      if (bubble) bubble.textContent = '';
     };
 
     const parseSseChunk = (rawChunk: string): ServerSseEvent[] => {
@@ -215,10 +383,24 @@ export function init(options: InitOptions = {}): void {
       appendMessage(userMsg);
 
       const assistantMsg: ChatMessage = { role: 'assistant', content: '' };
-      history.push(assistantMsg);
-      const assistantEl = appendMessage(assistantMsg);
-      const assistantBubble = assistantEl.querySelector<HTMLElement>('.chat-msg-bubble');
-      if (!assistantBubble) return;
+      let assistantEl: HTMLElement | null = null;
+      let assistantBubble: HTMLElement | null = null;
+      let assistantText = '';
+      const submitOption = (message: string): void => {
+        if (!message.trim() || active) return;
+        void send(message);
+      };
+
+      const ensureAssistantMessage = (): { el: HTMLElement; bubble: HTMLElement } | null => {
+        if (!assistantEl || !assistantBubble) {
+          history.push(assistantMsg);
+          assistantEl = appendMessage(assistantMsg);
+          assistantBubble = assistantEl.querySelector<HTMLElement>('.chat-msg-bubble');
+        }
+
+        if (!assistantEl || !assistantBubble) return null;
+        return { el: assistantEl, bubble: assistantBubble };
+      };
 
       const controller = new AbortController();
       const requestId = crypto.randomUUID();
@@ -226,9 +408,14 @@ export function init(options: InitOptions = {}): void {
       const timeoutId = window.setTimeout(() => {
         controller.abort();
         showError('Sorry, the request timed out. Please try again.');
-        if (assistantBubble.textContent === '') {
-          assistantEl.remove();
-          history.pop();
+        if (assistantEl && assistantBubble && assistantBubble.textContent !== '') {
+          const parsed = renderAssistantMessage(
+            assistantBubble,
+            assistantEl,
+            submitOption,
+            assistantText,
+          );
+          assistantMsg.content = parsed.markdown;
         }
         showTyping(false);
         setBusy(false);
@@ -258,8 +445,6 @@ export function init(options: InitOptions = {}): void {
 
         if (!response.ok || !response.body) {
           showError('Sorry, something went wrong. Please try again.');
-          assistantEl.remove();
-          history.pop();
           return;
         }
 
@@ -280,14 +465,32 @@ export function init(options: InitOptions = {}): void {
           for (const part of parts) {
             for (const event of parseSseChunk(part)) {
               if (typeof event.delta === 'string' && event.delta.length > 0) {
-                assistantBubble.textContent += event.delta;
+                const assistant = ensureAssistantMessage();
+                if (!assistant) return;
+                assistantText += event.delta;
+                assistant.bubble.textContent += event.delta;
                 messagesEl.scrollTop = messagesEl.scrollHeight;
                 gotAnyDelta = true;
               }
               if (event.done) {
+                if (!assistantEl || !assistantBubble) {
+                  const latencyMs = Math.round(performance.now() - startedAt);
+                  console.info(
+                    `[chat-client] requestId=${requestId} latencyMs=${latencyMs} outcome=done-empty`,
+                  );
+                  return;
+                }
                 if (typeof event.warning === 'string' && event.warning.length > 0) {
                   assistantMsg.warning = event.warning;
                 }
+                const parsed = renderAssistantMessage(
+                  assistantBubble,
+                  assistantEl,
+                  submitOption,
+                  assistantText,
+                );
+                assistantMsg.content = parsed.markdown;
+                messagesEl.scrollTop = messagesEl.scrollHeight;
                 const latencyMs = Math.round(performance.now() - startedAt);
                 console.info(
                   `[chat-client] requestId=${requestId} latencyMs=${latencyMs} outcome=done`,
@@ -304,10 +507,16 @@ export function init(options: InitOptions = {}): void {
 
         if (!gotAnyDelta) {
           showError('Sorry, something went wrong. Please try again.');
-          assistantEl.remove();
-          history.pop();
         } else {
+          if (!assistantEl || !assistantBubble) return;
           // Stream ended without explicit done — log partial outcome, keep message.
+          const parsed = renderAssistantMessage(
+            assistantBubble,
+            assistantEl,
+            submitOption,
+            assistantText,
+          );
+          assistantMsg.content = parsed.markdown;
           const latencyMs = Math.round(performance.now() - startedAt);
           console.info(
             `[chat-client] requestId=${requestId} latencyMs=${latencyMs} outcome=stream-end`,
@@ -318,10 +527,14 @@ export function init(options: InitOptions = {}): void {
           return;
         }
         showError('Sorry, something went wrong. Please try again.');
-        if (assistantBubble.textContent === '') {
-          assistantEl.remove();
-          history.pop();
-        } else {
+        if (assistantEl && assistantBubble && assistantBubble.textContent !== '') {
+          const parsed = renderAssistantMessage(
+            assistantBubble,
+            assistantEl,
+            submitOption,
+            assistantText,
+          );
+          assistantMsg.content = parsed.markdown;
           assistantMsg.warning = partialCopy;
         }
       } finally {
@@ -356,12 +569,14 @@ export function init(options: InitOptions = {}): void {
       launcherEl.focus();
     });
 
+    resizeEl.addEventListener('click', () => {
+      setExpanded(!widget.classList.contains('is-expanded'));
+    });
+
     launcherEl.addEventListener('click', () => {
       launcherEl.hidden = true;
       widget.hidden = false;
       inputEl.focus();
     });
-
-    void resetAssistant;
   })();
 }
