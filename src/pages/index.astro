@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
+import FreeConsultationBanner from '../components/FreeConsultationBanner.astro';
 import Services from '../components/Services.astro';
 import Blog from '../components/Blog.astro';
 import CTA from '../components/CTA.astro';
@@ -19,6 +20,7 @@ const copy = ui[lang];
   lang={lang}
 >
   <Header lang={lang} />
+  <FreeConsultationBanner lang={lang} />
   <main id="main-content">
     <Hero lang={lang} />
     <Services lang={lang} />

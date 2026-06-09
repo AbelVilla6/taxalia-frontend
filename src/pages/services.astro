@@ -15,14 +15,8 @@ const copy = ui[lang];
   lang={lang}
 >
   <Header activePage="services" lang={lang} />
-  <main id="main-content">
-    <section class="section-sm" style="background:var(--color-bg-soft);">
-      <div class="container">
-        <p class="eyebrow">{copy.services.pageEyebrow}</p>
-        <h1 class="section-title" style="text-transform:none;font-weight:500;">{copy.services.pageTitle}</h1>
-      </div>
-    </section>
-    <Services lang={lang} />
+  <main id="main-content" class="services-page">
+    <Services lang={lang} align="left" />
   </main>
   <Footer lang={lang} />
 </Base>

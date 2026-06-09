@@ -3,10 +3,12 @@ import { localizePath, ui, type Lang } from '../i18n';
 
 export interface Props {
   lang?: Lang;
+  align?: 'center' | 'left';
 }
 
-const { lang = 'en' } = Astro.props;
+const { lang = 'en', align = 'center' } = Astro.props;
 const copy = ui[lang].services;
+const isLeftAligned = align === 'left';
 const icons = [
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="19" cy="7" r="2"/><path d="M19 13v6M22 16h-6"/></svg>`,
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 10h2v8H7zM11 6h2v12h-2zM15 14h2v4h-2z"/></svg>`,
@@ -18,7 +20,7 @@ const icons = [
   <div class="container">
     <!-- Header -->
     <div class="text-center" style="margin-bottom:clamp(2rem,4vw,3.5rem);">
-      <p class="eyebrow" style="justify-content:center;gap:0.4rem;">
+      <p class="eyebrow" style={`${isLeftAligned ? 'display:flex;width:100%;' : ''}justify-content:${isLeftAligned ? 'flex-start' : 'center'};gap:0.4rem;`}>
         <span>{copy.eyebrow}</span>
       </p>
       <h2 id="services-heading" class="section-title" style="margin-inline:auto;text-align:center;text-transform:none;font-weight:500;">
@@ -28,7 +30,7 @@ const icons = [
 
     <!-- Cards grid -->
     <div class="grid grid-3" style="--grid-gap:1.5rem;">
-      {copy.items.map((svc, index) => (
+      {copy.groups.map((svc, index) => (
         <article class="service-card-lb">
           <div class="service-icon-wrap" set:html={icons[index]} />
           <h3 class="service-card-title">{svc.title}</h3>

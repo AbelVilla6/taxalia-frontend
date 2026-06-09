@@ -59,6 +59,7 @@
 .lang-switcher {
   display: inline-flex;
   gap: 0;
+  margin-left: clamp(0.75rem, 2vw, 1.75rem);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
   overflow: hidden;
@@ -69,7 +70,8 @@
   align-items: center;
   justify-content: center;
   min-width: 2.35rem;
-  padding: 0.3rem 0.7rem;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
   border: 0;
   font-size: 0.7rem;
   font-weight: 700;
@@ -140,6 +142,11 @@
   letter-spacing: 0.01em;
 }
 
+.lang-flag {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
 .hero-split .hero-text {
   color: var(--color-text-soft);
 }
@@ -173,6 +180,14 @@
   background: var(--color-bg-soft);
 }
 
+.services-page > .services-section {
+  padding-top: clamp(1.25rem, 3vw, 2.25rem);
+}
+
+.service-detail-section {
+  padding-top: clamp(1.25rem, 3vw, 2.25rem);
+}
+
 .service-card-lb {
   display: flex;
   flex-direction: column;
@@ -192,6 +207,29 @@
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
   border-color: var(--color-accent);
+}
+
+.service-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.service-detail-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-height: 100%;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.service-detail-card .btn {
+  align-self: flex-start;
+  margin-top: auto;
 }
 
 .service-icon-wrap {
@@ -299,6 +337,194 @@
   border-radius: 50%;
   background: radial-gradient(circle, rgba(200, 161, 90, 0.12), transparent 70%);
   pointer-events: none;
+}
+
+.free-consultation-banner {
+  position: fixed;
+  top: calc(var(--header-h, 86px) + 1rem);
+  left: 0;
+  right: 0;
+  z-index: 80;
+  pointer-events: none;
+  transform: translateY(0);
+  opacity: 1;
+  transition: opacity 220ms ease, transform 220ms ease, visibility 220ms ease;
+}
+
+.free-consultation-banner.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-0.75rem);
+}
+
+.free-consultation-banner .container {
+  position: relative;
+}
+
+.free-consultation-close {
+  position: absolute;
+  top: -0.75rem;
+  right: 0.5rem;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgba(18, 54, 68, 0.18);
+  border-radius: 50%;
+  color: var(--color-primary-dark);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 20px rgba(76, 49, 14, 0.18);
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  pointer-events: auto;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.free-consultation-close:hover,
+.free-consultation-close:focus-visible {
+  transform: scale(1.06);
+  background: #fff;
+}
+
+.free-consultation-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: clamp(0.8rem, 2vw, 1.25rem);
+  color: var(--color-primary-dark);
+  text-decoration: none;
+  border: 1px solid rgba(18, 54, 68, 0.14);
+  border-radius: var(--radius-lg);
+  padding: clamp(0.9rem, 2vw, 1.25rem);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.34)),
+    rgba(255, 255, 255, 0.52);
+  box-shadow: 0 24px 60px rgba(76, 49, 14, 0.18), inset 0 1px 0 rgba(255,255,255,0.62);
+  overflow: hidden;
+  position: relative;
+  pointer-events: auto;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.free-consultation-glow {
+  position: absolute;
+  inset: -80% auto auto 10%;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(247, 223, 170, 0.36), transparent 68%);
+  pointer-events: none;
+}
+
+.free-consultation-card:hover,
+.free-consultation-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(18, 54, 68, 0.28);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 28px 70px rgba(76, 49, 14, 0.24), 0 0 0 5px rgba(18, 54, 68, 0.06);
+}
+
+.free-consultation-badge {
+  display: grid;
+  place-items: center;
+  width: clamp(3.35rem, 6vw, 4.2rem);
+  height: clamp(3.35rem, 6vw, 4.2rem);
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary-dark), #245468);
+  font-size: clamp(0.68rem, 1vw, 0.78rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  box-shadow: 0 16px 34px rgba(18, 54, 68, 0.28);
+  transform: rotate(-8deg);
+  z-index: 1;
+}
+
+.free-consultation-copy {
+  display: grid;
+  gap: 0.15rem;
+  z-index: 1;
+}
+
+.free-consultation-eyebrow {
+  color: var(--color-primary);
+  font-size: clamp(0.68rem, 1vw, 0.8rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.free-consultation-title {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 2.8vw, 2.15rem);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.free-consultation-text {
+  display: block;
+  color: rgba(18, 54, 68, 0.76);
+  font-size: clamp(0.82rem, 1.2vw, 0.95rem);
+}
+
+.free-consultation-arrow {
+  display: grid;
+  place-items: center;
+  width: clamp(2.2rem, 4vw, 2.7rem);
+  height: clamp(2.2rem, 4vw, 2.7rem);
+  border-radius: 50%;
+  color: #fff;
+  background: var(--color-primary-dark);
+  font-weight: 800;
+  font-size: 1.05rem;
+  z-index: 1;
+}
+
+.flag-icon {
+  position: relative;
+  display: inline-block;
+  width: 24px;
+  height: 16px;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 2px 5px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.flag-icon-us {
+  background: repeating-linear-gradient(
+    to bottom,
+    #b22234 0,
+    #b22234 1.23px,
+    #fff 1.23px,
+    #fff 2.46px
+  );
+}
+
+.flag-icon-us span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 8.6px;
+  background: #3c3b6e;
+}
+
+.flag-icon-es {
+  background: linear-gradient(to bottom, #aa151b 0 25%, #f1bf00 25% 75%, #aa151b 75% 100%);
+}
+
+.flag-icon-es span {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 3px;
+  height: 5px;
+  border-radius: 1px;
+  background: #aa151b;
 }
 
 .cta-grid {
@@ -524,6 +750,11 @@
   .cta-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+  }
+
+  .free-consultation-card {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
   }
 }
 
