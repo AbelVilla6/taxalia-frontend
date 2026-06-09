@@ -5,6 +5,8 @@ import Blog from '../components/Blog.astro';
 import Footer from '../components/Footer.astro';
 import { ui } from '../i18n';
 
+export const prerender = false;
+
 const lang = 'en';
 const copy = ui[lang];
 ---
