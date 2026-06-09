@@ -1,48 +1,61 @@
 ---
-import { localizePath, ui, type Lang } from '../i18n';
+import { listPosts, blogPath } from '../lib/blog';
+import type { Lang } from '../i18n';
 
-export interface Props {
+interface Props {
   lang?: Lang;
 }
 
 const { lang = 'en' } = Astro.props;
-const copy = ui[lang].blog;
+const posts = await listPosts(lang);
 ---
 
-<section class="section blog-lb" aria-labelledby="blog-heading">
+<section class="section blog-lb">
   <div class="container">
-    <!-- Header -->
-    <div style="margin-bottom:0;">
-      <p class="eyebrow">{copy.eyebrow}</p>
-      <h2 id="blog-heading" class="section-title" style="text-transform:none;font-weight:500;">
-        {copy.title}
-      </h2>
-    </div>
+    {
+      posts.length > 0 ? (
+        <div class="blog-grid-lb">
+          {posts.map((post) => (
+            <article class="post-card-lb">
+              {post.heroImage && (
+                <a href={blogPath(lang, post.slug)} aria-label={post.title}>
+                  <img
+                    class="post-image"
+                    src={post.heroImage}
+                    alt={post.heroAlt || post.title}
+                    loading="lazy"
+                  />
+                </a>
+              )}
 
-    <!-- Posts -->
-    <div class="blog-grid-lb">
-      {copy.posts.map((post) => (
-        <article class="post-card-lb">
-          <a href={localizePath(lang, post.href)} tabindex="-1" aria-hidden="true">
-            <img
-              class="post-image"
-              src={post.image}
-              alt={post.imageAlt}
-              width="480"
-              height="360"
-              loading="lazy"
-            />
-          </a>
-          <div>
-            <p class="post-date">{post.date}</p>
-            <h3 class="post-title">
-              <a href={localizePath(lang, post.href)}>{post.title}</a>
-            </h3>
-            <p class="post-excerpt">{post.excerpt}</p>
-            <a href={localizePath(lang, post.href)} class="link-arrow">{copy.readMore}</a>
-          </div>
-        </article>
-      ))}
-    </div>
+              <div>
+                <p class="post-date">
+                  {new Date(post.pubDate).toLocaleDateString(
+                    lang === 'es' ? 'es-ES' : 'en-US',
+                    { day: '2-digit', month: 'long', year: 'numeric' },
+                  )}
+                </p>
+
+                <h2 class="post-title">
+                  <a href={blogPath(lang, post.slug)}>{post.title}</a>
+                </h2>
+
+                <p class="post-excerpt">{post.description}</p>
+
+                <a class="link-arrow" href={blogPath(lang, post.slug)}>
+                  {lang === 'es' ? 'Leer artículo' : 'Read article'}
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p class="section-lead">
+          {lang === 'es'
+            ? 'Todavía no hay artículos publicados.'
+            : 'No articles have been published yet.'}
+        </p>
+      )
+    }
   </div>
 </section>

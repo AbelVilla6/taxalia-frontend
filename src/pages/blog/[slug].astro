@@ -1,0 +1,97 @@
+---
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { ui } from '../../i18n';
+import { getPost } from '../../lib/blog';
+import '../../assets/css/blog-post.css';
+
+export const prerender = false;
+
+const lang = 'en';
+const copy = ui[lang];
+const slug = Astro.params.slug!;
+const post = await getPost(lang, slug);
+
+if (!post) {
+  Astro.response.status = 404;
+}
+
+const dateFmt = { day: '2-digit', month: 'long', year: 'numeric' } as const;
+---
+
+{
+  post ? (
+    <Base title={post.title} description={post.description} lang={lang}>
+      <Header activePage="blog" lang={lang} />
+
+      <main id="main-content">
+        <article class="blog-post-detail">
+          <header class="blog-post-detail__hero">
+            <div class="container">
+              <a class="blog-post-detail__back" href="/blog">
+                ← Back to blog
+              </a>
+
+              <p class="eyebrow">{copy.blog.eyebrow}</p>
+
+              <h1>{post.title}</h1>
+
+              <p class="blog-post-detail__description">{post.description}</p>
+
+              <div class="blog-post-detail__meta">
+                <span>{post.author}</span>
+                <time datetime={post.pubDate}>
+                  {new Date(post.pubDate).toLocaleDateString('en-US', dateFmt)}
+                </time>
+                {post.updatedDate && (
+                  <span>
+                    Updated:{' '}
+                    {new Date(post.updatedDate).toLocaleDateString('en-US', dateFmt)}
+                  </span>
+                )}
+              </div>
+
+              {post.tags.length > 0 && (
+                <ul class="blog-post-detail__tags">
+                  {post.tags.map((tag) => (
+                    <li>{tag}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {post.heroImage && (
+              <figure class="blog-post-detail__cover">
+                <img src={post.heroImage} alt={post.heroAlt || post.title} loading="eager" />
+              </figure>
+            )}
+          </header>
+
+          <div class="blog-post-detail__body" set:html={post.contentHtml} />
+        </article>
+      </main>
+
+      <Footer lang={lang} />
+    </Base>
+  ) : (
+    <Base title="Post not found" description="" lang={lang}>
+      <Header activePage="blog" lang={lang} />
+      <main id="main-content">
+        <section class="section">
+          <div class="container">
+            <p class="eyebrow">{copy.blog.eyebrow}</p>
+            <h1 class="section-title" style="text-transform:none;font-weight:500;">
+              Post not found
+            </h1>
+            <p class="section-lead">
+              The article you are looking for does not exist or is no longer available.
+            </p>
+            <a class="link-arrow" href="/blog">Back to blog</a>
+          </div>
+        </section>
+      </main>
+      <Footer lang={lang} />
+    </Base>
+  )
+}
