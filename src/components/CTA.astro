@@ -57,39 +57,35 @@ const copy = ui[lang].cta;
         </div>
       </address>
 
-      <!-- Right: CTA button + social -->
-      <div style="display:flex;flex-direction:column;gap:1rem;align-items:flex-start;">
-        <a href={localizePath(lang, '/contact')} class="btn btn-outline">
-          {copy.getInTouch} <span aria-hidden="true">&rarr;</span>
-        </a>
+    </div>
 
-        <a
-          href="https://instagram.com/lbcotax"
-          class="cta-contact-item"
-          style="font-size:var(--text-xs);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div style="margin-top:1.5rem;text-align:center;">
+      <a
+        href="https://instagram.com/lbcotax"
+        class="cta-contact-item"
+        style="justify-content:center;gap:0.65rem;font-size:var(--text-xs);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;display:inline-flex;"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="var(--color-primary)"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="var(--color-primary)"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-          </svg>
-          {copy.followUs}&nbsp;
-          <strong>@lbcotax</strong>
-        </a>
-      </div>
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
+        {copy.followUs}&nbsp;
+        <strong>@lbcotax</strong>
+      </a>
     </div>
   </div>
 </section>
