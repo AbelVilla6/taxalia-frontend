@@ -233,6 +233,9 @@ export const ui = {
       lead: "Have questions or ready to get started? We're here to help.",
       getInTouch: 'Get in Touch',
       followUs: 'Follow us',
+      emailSubject: 'Inquiry from the Taxalia website',
+      emailBody:
+        'Hello Taxalia team,\n\nI would like to make an inquiry about your services.\n\nName:\nMessage:\n\nThank you.',
     },
     footer: {
       rights: 'All rights reserved.',
@@ -320,7 +323,7 @@ export const ui = {
         sending: 'Sending...',
         success: 'Thanks — your message has been sent. We will get back to you soon.',
         error:
-          'Sorry, we could not send your message right now. Please try again or email us directly at info@hitaxalia.com.',
+          'Sorry, we could not send your message right now. Please try again or email us directly at {email}.',
         note: 'We usually respond within one business day.',
       },
       taxCalculator: {
@@ -635,6 +638,9 @@ export const ui = {
       lead: '¿Tienes preguntas o quieres empezar? Estamos aquí para ayudarte.',
       getInTouch: 'Contactar',
       followUs: 'Síguenos',
+      emailSubject: 'Consulta desde la web de Taxalia',
+      emailBody:
+        'Hola, equipo de Taxalia:\n\nMe gustaría haceros una consulta sobre vuestros servicios.\n\nNombre:\nMensaje:\n\nGracias.',
     },
     footer: {
       rights: 'Todos los derechos reservados.',
@@ -722,7 +728,7 @@ export const ui = {
         sending: 'Enviando...',
         success: 'Gracias — tu mensaje fue enviado. Te responderemos pronto.',
         error:
-          'Lo siento, no pudimos enviar tu mensaje ahora mismo. Volvé a intentarlo o escribinos directamente a info@hitaxalia.com.',
+          'Lo siento, no pudimos enviar tu mensaje ahora mismo. Vuelve a intentarlo o escríbenos directamente a {email}.',
         note: 'Normalmente respondemos dentro de un día hábil.',
       },
       taxCalculator: {
@@ -847,3 +853,10 @@ export const ui = {
     },
   },
 } as const;
+
+export const contactEmail = 'info@hitaxalia.com';
+
+export function contactMailto(lang: Lang): string {
+  const { emailSubject, emailBody } = ui[lang].cta;
+  return `mailto:${contactEmail}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+}

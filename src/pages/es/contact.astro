@@ -3,11 +3,12 @@ import Base from '../../layouts/Base.astro';
 import Header from '../../components/Header.astro';
 import CTA from '../../components/CTA.astro';
 import Footer from '../../components/Footer.astro';
-import { ui } from '../../i18n';
+import { contactEmail, contactMailto, ui } from '../../i18n';
 
 const lang = 'es';
 const copy = ui[lang];
 const backendBase = (import.meta.env.PUBLIC_CHAT_API_BASE ?? 'http://localhost:4324').replace(/\/+$/, '');
+const mailtoHref = contactMailto(lang);
 ---
 
 <Base
@@ -94,18 +95,31 @@ const backendBase = (import.meta.env.PUBLIC_CHAT_API_BASE ?? 'http://localhost:4
   </main>
   <Footer lang={lang} />
 
-  <script define:vars={{ backendBase, messages: {
+  <script define:vars={{ backendBase, contactEmail, mailtoHref, messages: {
     sending: copy.pages.contact.sending,
     success: copy.pages.contact.success,
     error: copy.pages.contact.error,
     send: copy.pages.contact.send,
   } }}>
-    const form = document.getElementById('contact-form') as HTMLFormElement | null;
-    const submitButton = document.getElementById('contact-submit') as HTMLButtonElement | null;
-    const status = document.getElementById('contact-status') as HTMLElement | null;
+    const form = document.getElementById('contact-form');
+    const submitButton = document.getElementById('contact-submit');
+    const status = document.getElementById('contact-status');
 
     if (form && submitButton && status) {
       const submitLabel = submitButton.textContent ?? messages.send;
+
+      const showStatus = (message) => {
+        status.textContent = '';
+        const [before, after] = message.split('{email}');
+        if (after === undefined) {
+          status.textContent = message;
+          return;
+        }
+        const link = document.createElement('a');
+        link.href = mailtoHref;
+        link.textContent = contactEmail;
+        status.append(before, link, after);
+      };
 
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -139,7 +153,7 @@ const backendBase = (import.meta.env.PUBLIC_CHAT_API_BASE ?? 'http://localhost:4
           form.reset();
           status.textContent = messages.success;
         } catch (error) {
-          status.textContent = error instanceof Error && error.message ? error.message : messages.error;
+          showStatus(error instanceof Error && error.message ? error.message : messages.error);
         } finally {
           submitButton.disabled = false;
           submitButton.textContent = submitLabel;
