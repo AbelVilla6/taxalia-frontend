@@ -7,21 +7,43 @@ export interface Props {
   title?: string;
   description?: string;
   lang?: Lang;
+  /** Overrides the path-derived canonical URL (e.g. blog posts). */
+  canonicalUrl?: string;
+  /**
+   * Overrides the path-derived hreflang alternates. Langs absent from the
+   * map render no alternate link (e.g. an article without translation).
+   */
+  alternateUrls?: Partial<Record<Lang, string>>;
+  ogTitle?: string;
+  ogDescription?: string;
+  /** Absolute URL of the Open Graph image. */
+  ogImage?: string;
+  ogType?: string;
 }
 
 const {
   title = 'LB & CO Global Advisors',
   description = 'Independent, data-driven advisory and valuation services to help businesses, investors, and professionals make informed decisions across the United States.',
   lang = 'en',
+  canonicalUrl,
+  alternateUrls,
+  ogTitle,
+  ogDescription,
+  ogImage,
+  ogType = 'website',
 } = Astro.props;
 
 const htmlLang = languages[lang].htmlLang;
 const site = Astro.site ?? new URL('https://lbcoglobaladvisors.com');
 const basePath = basePathFromPathname(Astro.url.pathname);
 const showChat = basePath !== '/contact';
-const canonical = new URL(localizePath(lang, basePath), site).toString();
-const alternateEn = new URL(localizePath('en', basePath), site).toString();
-const alternateEs = new URL(localizePath('es', basePath), site).toString();
+const canonical = canonicalUrl ?? new URL(localizePath(lang, basePath), site).toString();
+const alternateEn = alternateUrls
+  ? alternateUrls.en ?? null
+  : new URL(localizePath('en', basePath), site).toString();
+const alternateEs = alternateUrls
+  ? alternateUrls.es ?? null
+  : new URL(localizePath('es', basePath), site).toString();
 ---
 
 <!doctype html>
@@ -32,9 +54,18 @@ const alternateEs = new URL(localizePath('es', basePath), site).toString();
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang={languages.en.htmlLang} href={alternateEn} />
-    <link rel="alternate" hreflang={languages.es.htmlLang} href={alternateEs} />
-    <link rel="alternate" hreflang="x-default" href={alternateEn} />
+    {alternateEn && <link rel="alternate" hreflang={languages.en.htmlLang} href={alternateEn} />}
+    {alternateEs && <link rel="alternate" hreflang={languages.es.htmlLang} href={alternateEs} />}
+    {alternateEn && <link rel="alternate" hreflang="x-default" href={alternateEn} />}
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={ogTitle ?? title} />
+    <meta property="og:description" content={ogDescription ?? description} />
+    <meta property="og:url" content={canonical} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+
+    <slot name="head" />
 
     <!-- Base stylesheet (clinica-premium) -->
     <link rel="stylesheet" href="/assets/css/clinica-premium.css" />

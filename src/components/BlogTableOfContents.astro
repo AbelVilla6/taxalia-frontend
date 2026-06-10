@@ -1,0 +1,28 @@
+---
+import type { TocEntry } from '../lib/blog';
+import type { Lang } from '../i18n';
+import { ui } from '../i18n';
+
+interface Props {
+  entries: TocEntry[];
+  lang?: Lang;
+}
+
+const { entries, lang = 'en' } = Astro.props;
+const minDepth = Math.min(...entries.map((entry) => entry.depth));
+---
+
+{
+  entries.length > 0 && (
+    <nav class="blog-toc" aria-label={ui[lang].blog.tocLabel}>
+      <p class="blog-toc__title">{ui[lang].blog.tocLabel}</p>
+      <ul class="blog-toc__list">
+        {entries.map((entry) => (
+          <li class="blog-toc__item" data-depth={entry.depth - minDepth}>
+            <a href={`#${entry.id}`}>{entry.text}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}

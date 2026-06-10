@@ -207,26 +207,7 @@ export const ui = {
       eyebrow: 'From Our Blog',
       title: 'Insights That Matter',
       readMore: 'Read More',
-      posts: [
-        {
-          date: 'May 10, 2024',
-          title: '2024 U.S. Real Estate Market Outlook: Key Trends and Opportunities',
-          excerpt:
-            'We break down the factors shaping the U.S. real estate market and what investors and business owners should watch.',
-          href: '/blog/2024-us-real-estate-market-outlook',
-          image: '/assets/images/blog-real-estate.webp',
-          imageAlt: 'Aerial view of a major US city skyline at dusk',
-        },
-        {
-          date: 'April 23, 2024',
-          title: 'Business Valuation 101: What You Need to Know',
-          excerpt:
-            'A practical guide to understanding business valuation methods and how they support better decision-making.',
-          href: '/blog/business-valuation-101',
-          image: '/assets/images/blog-valuation.webp',
-          imageAlt: 'Financial charts and pen on a desk',
-        },
-      ],
+      tocLabel: 'On this page',
     },
     cta: {
       title: "Let's Work Together",
@@ -611,27 +592,7 @@ export const ui = {
       eyebrow: 'Desde nuestro blog',
       title: 'Ideas que importan',
       readMore: 'Leer más',
-      posts: [
-        {
-          date: '10 de mayo de 2024',
-          title:
-            'Perspectivas del mercado inmobiliario de EE. UU. en 2024: tendencias y oportunidades',
-          excerpt:
-            'Analizamos los factores que están dando forma al mercado inmobiliario de EE. UU. y lo que inversores y empresas deben tener en cuenta.',
-          href: '/blog/2024-us-real-estate-market-outlook',
-          image: '/assets/images/blog-real-estate.webp',
-          imageAlt: 'Vista aérea de una gran ciudad estadounidense al atardecer',
-        },
-        {
-          date: '23 de abril de 2024',
-          title: 'Valoración de empresas 101: lo que necesitas saber',
-          excerpt:
-            'Una guía práctica para entender los métodos de valoración de empresas y cómo ayudan a tomar mejores decisiones.',
-          href: '/blog/business-valuation-101',
-          image: '/assets/images/blog-valuation.webp',
-          imageAlt: 'Gráficos financieros y un bolígrafo sobre un escritorio',
-        },
-      ],
+      tocLabel: 'En esta página',
     },
     cta: {
       title: 'Trabajemos juntos',
