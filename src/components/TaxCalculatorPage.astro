@@ -46,7 +46,7 @@ const statusOptions = Object.entries(copy.statuses) as Array<[FilingStatus, stri
 <section class="section tax-calculator-section">
   <div class="container">
     <div class="tax-calculator-grid">
-      <form id="tax-calculator-form" class="tax-calculator-card" aria-describedby="tax-calculator-note">
+<form id="tax-calculator-form" class="tax-calculator-card" aria-describedby="tax-calculator-note">
         <div class="tax-form-grid">
           <div class="form-field tax-form-field tax-form-field-wide">
             <label class="tax-form-label" for="filing-status">{copy.fields.filingStatus}</label>
@@ -79,6 +79,11 @@ const statusOptions = Object.entries(copy.statuses) as Array<[FilingStatus, stri
         </div>
 
         <p id="tax-calculator-note" class="editorial-text tax-form-help">{copy.formHelp}</p>
+
+        <div class="tax-form-actions" style="display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:1.25rem;">
+          <button type="submit" class="btn btn-gold">{copy.actions.calculate}</button>
+          <button type="reset" class="btn btn-outline">{copy.actions.reset}</button>
+        </div>
       </form>
 
       <aside class="tax-calculator-card tax-results-card" aria-live="polite">
@@ -111,6 +116,7 @@ const statusOptions = Object.entries(copy.statuses) as Array<[FilingStatus, stri
   labels: copy.results,
   locale: lang === 'es' ? 'es-ES' : 'en-US',
   standardDeductionDefaults: standardDeductions,
+  initialValues,
 }}>
   import { calculateTaxEstimate } from '../lib/tax-calculator';
 
@@ -132,7 +138,7 @@ const statusOptions = Object.entries(copy.statuses) as Array<[FilingStatus, stri
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   });
-  let lastStandardDeduction = Number(standardDeductionDefaults.single);
+  let lastStandardDeduction = Number(initialValues.deductions);
 
   const readAmount = (name: string) => {
     const field = form?.elements.namedItem(name) as HTMLInputElement | null;
@@ -163,6 +169,14 @@ const statusOptions = Object.entries(copy.statuses) as Array<[FilingStatus, stri
     event.preventDefault();
     updateEstimate();
   });
+
+  form?.addEventListener('reset', () => {
+    window.setTimeout(() => {
+      lastStandardDeduction = Number(initialValues.deductions);
+      updateEstimate();
+    }, 0);
+  });
+
   statusField?.addEventListener('change', () => {
     if (!deductionsField || !statusField) {
       return;
@@ -178,4 +192,5 @@ const statusOptions = Object.entries(copy.statuses) as Array<[FilingStatus, stri
   });
 
   form?.addEventListener('input', updateEstimate);
+  form?.addEventListener('change', updateEstimate);
 </script>

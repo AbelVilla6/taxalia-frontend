@@ -349,6 +349,10 @@ export const ui = {
           note:
             'Use this as a planning signal only. For U.S. taxpayers abroad, foreign income, credits, exclusions, and reporting obligations can materially change the result.',
         },
+        actions: {
+          calculate: 'Calculate',
+          reset: 'Reset calculator',
+        },
       },
     },
   },
@@ -658,6 +662,10 @@ export const ui = {
           owed: 'Saldo estimado a pagar',
           note:
             'Úsalo solo como una señal de planificación. Para contribuyentes estadounidenses en el extranjero, ingresos del exterior, créditos, exclusiones y obligaciones de reporte pueden cambiar materialmente el resultado.',
+        },
+        actions: {
+          calculate: 'Calcular',
+          reset: 'Restablecer calculadora',
         },
       },
     },
