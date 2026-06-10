@@ -307,14 +307,17 @@
 
 .tax-calculator-heading {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 420px);
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 460px);
   gap: clamp(1.5rem, 4vw, 3rem);
   align-items: end;
 }
 
 .tax-calculator-note,
 .tax-form-help,
-.tax-results-note {
+.tax-results-note,
+.tax-summary-text,
+.tax-form-section-title p,
+.tax-form-helper {
   margin: 0;
 }
 
@@ -338,12 +341,88 @@
   align-items: start;
 }
 
+.tax-calculator-grid-expanded {
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.55fr);
+}
+
 .tax-calculator-card {
   padding: clamp(1.25rem, 3vw, 2rem);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
   box-shadow: var(--shadow-sm);
+}
+
+.tax-calculator-form-card {
+  display: grid;
+  gap: 1.4rem;
+}
+
+.tax-form-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tax-form-header h2,
+.tax-results-card h2 {
+  margin: 0.2rem 0 0;
+  color: var(--color-primary-dark);
+  font-family: var(--font-heading);
+  font-size: clamp(1.35rem, 3vw, 1.9rem);
+  line-height: 1.15;
+}
+
+.tax-reset-btn {
+  flex: 0 0 auto;
+}
+
+.tax-form-section {
+  display: grid;
+  gap: 1rem;
+  padding: 1.1rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-md);
+  background: rgba(250, 247, 240, 0.45);
+}
+
+.tax-form-section-title {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+}
+
+.tax-form-section-title > span {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+  border-radius: 999px;
+  background: var(--color-primary-dark);
+  color: var(--color-surface);
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.tax-form-section-title h3 {
+  margin: 0;
+  color: var(--color-primary-dark);
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+}
+
+.tax-form-section-title p,
+.tax-form-helper,
+.tax-form-help,
+.tax-results-note,
+.tax-summary-text {
+  color: var(--color-text-soft);
+  font-size: var(--text-sm);
+  line-height: 1.65;
 }
 
 .tax-form-grid {
@@ -377,13 +456,91 @@
   font-size: var(--text-sm);
 }
 
-.tax-form-help {
-  margin-top: 1rem;
+.tax-form-control:focus {
+  border-color: var(--color-accent);
+  outline: 2px solid rgba(201, 164, 92, 0.25);
+}
+
+.tax-form-helper {
+  display: block;
+  margin-top: 0.35rem;
+}
+
+.tax-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.tax-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+.tax-checkbox input {
+  margin-top: 0.2rem;
+  accent-color: var(--color-primary-dark);
+}
+
+.tax-standard-preview {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-soft);
+  color: var(--color-primary-dark);
+  font-size: var(--text-sm);
+}
+
+.tax-standard-preview strong {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
 }
 
 .tax-results-card {
   position: sticky;
   top: calc(var(--header-h) + 1.25rem);
+}
+
+.tax-result-highlight {
+  display: grid;
+  gap: 0.35rem;
+  margin: 1.25rem 0;
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  color: var(--color-primary-dark);
+  background: var(--color-bg-soft);
+}
+
+.tax-result-highlight span {
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tax-result-highlight strong {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1;
+}
+
+.tax-result-highlight.is-refund {
+  border-left: 4px solid #2f855a;
+}
+
+.tax-result-highlight.is-owed {
+  border-left: 4px solid #b83232;
 }
 
 .tax-result-list {
@@ -422,6 +579,37 @@
 .tax-result-total strong {
   font-family: var(--font-heading);
   font-size: clamp(1.35rem, 3vw, 1.8rem);
+}
+
+.tax-report {
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--color-border);
+  padding-top: 1rem;
+}
+
+.tax-report summary {
+  cursor: pointer;
+  color: var(--color-primary-dark);
+  font-weight: 800;
+}
+
+.tax-report-table {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.tax-report-table > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--color-text-soft);
+  font-size: var(--text-sm);
+}
+
+.tax-report-table strong {
+  color: var(--color-primary-dark);
+  text-align: right;
 }
 
 .tax-results-note {

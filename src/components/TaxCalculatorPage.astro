@@ -1,5 +1,5 @@
 ---
-import { calculateTaxEstimate, standardDeductions, type FilingStatus } from '../lib/tax-calculator';
+import { calculateTaxEstimate, standardDeductions, TAX_YEAR, type FilingStatus } from '../lib/tax-calculator';
 import { ui, type Lang } from '../i18n';
 
 export interface Props {
@@ -11,23 +11,104 @@ const copy = ui[lang].pages.taxCalculator;
 const initialStatus: FilingStatus = 'single';
 const initialValues = {
   filingStatus: initialStatus,
-  income: 85000,
-  deductions: standardDeductions[initialStatus],
-  credits: 0,
-  withholding: 12000,
+  dependentStatus: 'no',
+  childDependents: 0,
+  otherDependents: 0,
+  wages: 85_000,
+  spouseWages: 0,
+  taxableInterest: 0,
+  taxExemptInterest: 0,
+  ordinaryDividends: 0,
+  qualifiedDividends: 0,
+  shortTermCapitalGains: 0,
+  longTermCapitalGains: 0,
+  businessIncome: 0,
+  retirementIncome: 0,
+  socialSecurityBenefits: 0,
+  unemploymentIncome: 0,
+  otherIncome: 0,
+  traditionalIraDeduction: 0,
+  studentLoanInterest: 0,
+  otherAdjustments: 0,
+  taxpayerOver65: false,
+  taxpayerBlind: false,
+  spouseOver65: false,
+  spouseBlind: false,
+  medicalExpenses: 0,
+  stateLocalTaxes: 0,
+  mortgageInterest: 0,
+  charitableGifts: 0,
+  otherItemizedDeductions: 0,
+  federalWithholding: 12_000,
+  estimatedTaxPayments: 0,
+  additionalNonrefundableCredits: 0,
+  refundableCredits: 0,
 };
 const initialEstimate = calculateTaxEstimate(initialValues);
-const currencyFormatter = new Intl.NumberFormat(lang === 'es' ? 'es-ES' : 'en-US', {
+const locale = lang === 'es' ? 'es-ES' : 'en-US';
+const currencyFormatter = new Intl.NumberFormat(locale, {
   style: 'currency',
   currency: 'USD',
   maximumFractionDigits: 0,
 });
-const percentFormatter = new Intl.NumberFormat(lang === 'es' ? 'es-ES' : 'en-US', {
+const percentFormatter = new Intl.NumberFormat(locale, {
   style: 'percent',
   minimumFractionDigits: 1,
   maximumFractionDigits: 1,
 });
 const statusOptions = Object.entries(copy.statuses) as Array<[FilingStatus, string]>;
+const dependentStatusOptions = Object.entries(copy.dependentStatuses);
+const numberFormatValue = (value: number) => String(value);
+const isChecked = (value: boolean) => value ? true : undefined;
+const calculatorConfig = JSON.stringify({
+  locale,
+  labels: copy.results,
+  methods: copy.deductionMethods,
+  initialValues,
+  standardDeductionDefaults: standardDeductions,
+}).replace(/</g, '\\u003c');
+
+const filingFields = [
+  { name: 'childDependents', label: copy.fields.childDependents, min: 0, max: 99, step: 1 },
+  { name: 'otherDependents', label: copy.fields.otherDependents, min: 0, max: 99, step: 1 },
+];
+
+const incomeFields = [
+  { name: 'wages', label: copy.fields.wages, help: copy.helpers.wages },
+  { name: 'spouseWages', label: copy.fields.spouseWages, help: copy.helpers.spouseWages, spouseOnly: true },
+  { name: 'taxableInterest', label: copy.fields.taxableInterest },
+  { name: 'taxExemptInterest', label: copy.fields.taxExemptInterest, help: copy.helpers.taxExemptInterest },
+  { name: 'ordinaryDividends', label: copy.fields.ordinaryDividends },
+  { name: 'qualifiedDividends', label: copy.fields.qualifiedDividends },
+  { name: 'shortTermCapitalGains', label: copy.fields.shortTermCapitalGains },
+  { name: 'longTermCapitalGains', label: copy.fields.longTermCapitalGains },
+  { name: 'businessIncome', label: copy.fields.businessIncome },
+  { name: 'retirementIncome', label: copy.fields.retirementIncome },
+  { name: 'socialSecurityBenefits', label: copy.fields.socialSecurityBenefits },
+  { name: 'unemploymentIncome', label: copy.fields.unemploymentIncome },
+  { name: 'otherIncome', label: copy.fields.otherIncome },
+];
+
+const adjustmentFields = [
+  { name: 'traditionalIraDeduction', label: copy.fields.traditionalIraDeduction },
+  { name: 'studentLoanInterest', label: copy.fields.studentLoanInterest, help: copy.helpers.studentLoanInterest },
+  { name: 'otherAdjustments', label: copy.fields.otherAdjustments },
+];
+
+const itemizedFields = [
+  { name: 'medicalExpenses', label: copy.fields.medicalExpenses, help: copy.helpers.medicalExpenses },
+  { name: 'stateLocalTaxes', label: copy.fields.stateLocalTaxes, help: copy.helpers.stateLocalTaxes },
+  { name: 'mortgageInterest', label: copy.fields.mortgageInterest },
+  { name: 'charitableGifts', label: copy.fields.charitableGifts },
+  { name: 'otherItemizedDeductions', label: copy.fields.otherItemizedDeductions },
+];
+
+const paymentFields = [
+  { name: 'federalWithholding', label: copy.fields.federalWithholding },
+  { name: 'estimatedTaxPayments', label: copy.fields.estimatedTaxPayments },
+  { name: 'additionalNonrefundableCredits', label: copy.fields.additionalNonrefundableCredits },
+  { name: 'refundableCredits', label: copy.fields.refundableCredits },
+];
 ---
 
 <section class="section-sm tax-calculator-hero">
@@ -45,50 +126,214 @@ const statusOptions = Object.entries(copy.statuses) as Array<[FilingStatus, stri
 
 <section class="section tax-calculator-section">
   <div class="container">
-    <div class="tax-calculator-grid">
-<form id="tax-calculator-form" class="tax-calculator-card" aria-describedby="tax-calculator-note">
-        <div class="tax-form-grid">
-          <div class="form-field tax-form-field tax-form-field-wide">
-            <label class="tax-form-label" for="filing-status">{copy.fields.filingStatus}</label>
-            <select id="filing-status" name="filingStatus" class="tax-form-control">
-              {statusOptions.map(([value, label]) => (
-                <option value={value} selected={value === initialValues.filingStatus}>{label}</option>
-              ))}
-            </select>
+    <div class="tax-calculator-grid tax-calculator-grid-expanded">
+      <form id="tax-calculator-form" class="tax-calculator-card tax-calculator-form-card" aria-describedby="tax-calculator-note">
+        <div class="tax-form-header">
+          <div>
+            <p class="eyebrow">1040</p>
+            <h2>{copy.formTitle.replace('{year}', String(TAX_YEAR))}</h2>
           </div>
-
-          <div class="form-field tax-form-field">
-            <label class="tax-form-label" for="income">{copy.fields.income}</label>
-            <input id="income" name="income" class="tax-form-control" type="number" min="0" step="100" value={initialValues.income} inputmode="decimal" />
-          </div>
-
-          <div class="form-field tax-form-field">
-            <label class="tax-form-label" for="deductions">{copy.fields.deductions}</label>
-            <input id="deductions" name="deductions" class="tax-form-control" type="number" min="0" step="100" value={initialValues.deductions} inputmode="decimal" />
-          </div>
-
-          <div class="form-field tax-form-field">
-            <label class="tax-form-label" for="credits">{copy.fields.credits}</label>
-            <input id="credits" name="credits" class="tax-form-control" type="number" min="0" step="100" value={initialValues.credits} inputmode="decimal" />
-          </div>
-
-          <div class="form-field tax-form-field">
-            <label class="tax-form-label" for="withholding">{copy.fields.withholding}</label>
-            <input id="withholding" name="withholding" class="tax-form-control" type="number" min="0" step="100" value={initialValues.withholding} inputmode="decimal" />
-          </div>
+          <button type="reset" class="btn btn-outline tax-reset-btn">{copy.actions.reset}</button>
         </div>
 
         <p id="tax-calculator-note" class="editorial-text tax-form-help">{copy.formHelp}</p>
 
-        <div class="tax-form-actions" style="display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:1.25rem;">
-          <button type="submit" class="btn btn-gold">{copy.actions.calculate}</button>
-          <button type="reset" class="btn btn-outline">{copy.actions.reset}</button>
-        </div>
+        <section class="tax-form-section" aria-labelledby="tax-section-filing">
+          <div class="tax-form-section-title">
+            <span>1</span>
+            <div>
+              <h3 id="tax-section-filing">{copy.sections.filing.title}</h3>
+              <p>{copy.sections.filing.description}</p>
+            </div>
+          </div>
+
+          <div class="tax-form-grid">
+            <div class="form-field tax-form-field tax-form-field-wide">
+              <label class="tax-form-label" for="filing-status">{copy.fields.filingStatus}</label>
+              <select id="filing-status" name="filingStatus" class="tax-form-control">
+                {statusOptions.map(([value, label]) => (
+                  <option value={value} selected={value === initialValues.filingStatus}>{label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div class="form-field tax-form-field tax-form-field-wide">
+              <label class="tax-form-label" for="dependent-status">{copy.fields.dependentStatus}</label>
+              <select id="dependent-status" name="dependentStatus" class="tax-form-control">
+                {dependentStatusOptions.map(([value, label]) => (
+                  <option value={value} selected={value === initialValues.dependentStatus}>{label}</option>
+                ))}
+              </select>
+            </div>
+
+            {filingFields.map((field) => (
+              <div class="form-field tax-form-field">
+                <label class="tax-form-label" for={field.name}>{field.label}</label>
+                <input
+                  id={field.name}
+                  name={field.name}
+                  class="tax-form-control"
+                  type="number"
+                  min={field.min}
+                  max={field.max}
+                  step={field.step}
+                  value={numberFormatValue(initialValues[field.name])}
+                  inputmode="numeric"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="tax-form-section" aria-labelledby="tax-section-income">
+          <div class="tax-form-section-title">
+            <span>2</span>
+            <div>
+              <h3 id="tax-section-income">{copy.sections.income.title}</h3>
+              <p>{copy.sections.income.description}</p>
+            </div>
+          </div>
+
+          <div class="tax-form-grid">
+            {incomeFields.map((field) => (
+              <div class="form-field tax-form-field" data-spouse-field={field.spouseOnly ? 'true' : undefined}>
+                <label class="tax-form-label" for={field.name}>{field.label}</label>
+                <input
+                  id={field.name}
+                  name={field.name}
+                  class="tax-form-control"
+                  type="number"
+                  min="0"
+                  step="100"
+                  value={numberFormatValue(initialValues[field.name])}
+                  inputmode="decimal"
+                />
+                {field.help && <small class="tax-form-helper">{field.help}</small>}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="tax-form-section" aria-labelledby="tax-section-adjustments">
+          <div class="tax-form-section-title">
+            <span>3</span>
+            <div>
+              <h3 id="tax-section-adjustments">{copy.sections.adjustments.title}</h3>
+              <p>{copy.sections.adjustments.description}</p>
+            </div>
+          </div>
+
+          <div class="tax-form-grid">
+            {adjustmentFields.map((field) => (
+              <div class="form-field tax-form-field">
+                <label class="tax-form-label" for={field.name}>{field.label}</label>
+                <input
+                  id={field.name}
+                  name={field.name}
+                  class="tax-form-control"
+                  type="number"
+                  min="0"
+                  step="100"
+                  value={numberFormatValue(initialValues[field.name])}
+                  inputmode="decimal"
+                />
+                {field.help && <small class="tax-form-helper">{field.help}</small>}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="tax-form-section" aria-labelledby="tax-section-deductions">
+          <div class="tax-form-section-title">
+            <span>4</span>
+            <div>
+              <h3 id="tax-section-deductions">{copy.sections.deductions.title}</h3>
+              <p>{copy.sections.deductions.description}</p>
+            </div>
+          </div>
+
+          <div class="tax-checkbox-grid">
+            <label class="tax-checkbox"><input type="checkbox" name="taxpayerOver65" checked={isChecked(initialValues.taxpayerOver65)} /> {copy.fields.taxpayerOver65}</label>
+            <label class="tax-checkbox"><input type="checkbox" name="taxpayerBlind" checked={isChecked(initialValues.taxpayerBlind)} /> {copy.fields.taxpayerBlind}</label>
+            <label class="tax-checkbox" data-spouse-field="true"><input type="checkbox" name="spouseOver65" checked={isChecked(initialValues.spouseOver65)} /> {copy.fields.spouseOver65}</label>
+            <label class="tax-checkbox" data-spouse-field="true"><input type="checkbox" name="spouseBlind" checked={isChecked(initialValues.spouseBlind)} /> {copy.fields.spouseBlind}</label>
+          </div>
+
+          <div class="tax-standard-preview">
+            <span>{copy.results.standardDeduction}</span>
+            <strong id="standard-deduction-preview">{currencyFormatter.format(initialEstimate.standardDeduction)}</strong>
+          </div>
+
+          <div class="tax-form-grid">
+            {itemizedFields.map((field) => (
+              <div class="form-field tax-form-field">
+                <label class="tax-form-label" for={field.name}>{field.label}</label>
+                <input
+                  id={field.name}
+                  name={field.name}
+                  class="tax-form-control"
+                  type="number"
+                  min="0"
+                  step="100"
+                  value={numberFormatValue(initialValues[field.name])}
+                  inputmode="decimal"
+                />
+                {field.help && <small class="tax-form-helper">{field.help}</small>}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="tax-form-section" aria-labelledby="tax-section-payments">
+          <div class="tax-form-section-title">
+            <span>5</span>
+            <div>
+              <h3 id="tax-section-payments">{copy.sections.payments.title}</h3>
+              <p>{copy.sections.payments.description}</p>
+            </div>
+          </div>
+
+          <div class="tax-form-grid">
+            {paymentFields.map((field) => (
+              <div class="form-field tax-form-field">
+                <label class="tax-form-label" for={field.name}>{field.label}</label>
+                <input
+                  id={field.name}
+                  name={field.name}
+                  class="tax-form-control"
+                  type="number"
+                  min="0"
+                  step="100"
+                  value={numberFormatValue(initialValues[field.name])}
+                  inputmode="decimal"
+                />
+              </div>
+            ))}
+          </div>
+        </section>
       </form>
 
       <aside class="tax-calculator-card tax-results-card" aria-live="polite">
         <p class="eyebrow">{copy.results.eyebrow}</p>
+        <h2 id="tax-summary-headline">{copy.results.headlineTemplate.replace('{tax}', currencyFormatter.format(initialEstimate.estimatedTax))}</h2>
+        <p id="tax-summary-text" class="editorial-text tax-summary-text">
+          {copy.results.summaryText}
+        </p>
+
+        <div id="tax-balance-card" class={`tax-result-highlight ${initialEstimate.refundOrOwed >= 0 ? 'is-refund' : 'is-owed'}`}>
+          <span id="balance-label">{initialEstimate.refundOrOwed >= 0 ? copy.results.refund : copy.results.owed}</span>
+          <strong id="refund-or-owed">{currencyFormatter.format(Math.abs(initialEstimate.refundOrOwed))}</strong>
+        </div>
+
         <div class="tax-result-list">
+          <div class="tax-result-item">
+            <span>{copy.results.totalIncome}</span>
+            <strong id="total-income">{currencyFormatter.format(initialEstimate.totalIncome)}</strong>
+          </div>
+          <div class="tax-result-item">
+            <span>{copy.results.adjustedGrossIncome}</span>
+            <strong id="adjusted-gross-income">{currencyFormatter.format(initialEstimate.adjustedGrossIncome)}</strong>
+          </div>
           <div class="tax-result-item">
             <span>{copy.results.taxableIncome}</span>
             <strong id="taxable-income">{currencyFormatter.format(initialEstimate.taxableIncome)}</strong>
@@ -101,68 +346,169 @@ const statusOptions = Object.entries(copy.statuses) as Array<[FilingStatus, stri
             <span>{copy.results.effectiveRate}</span>
             <strong id="effective-rate">{percentFormatter.format(initialEstimate.effectiveTaxRate)}</strong>
           </div>
-          <div class="tax-result-item tax-result-total">
-            <span id="balance-label">{initialEstimate.refundOrOwed >= 0 ? copy.results.refund : copy.results.owed}</span>
-            <strong id="refund-or-owed">{currencyFormatter.format(Math.abs(initialEstimate.refundOrOwed))}</strong>
+          <div class="tax-result-item">
+            <span>{copy.results.marginalRate}</span>
+            <strong id="marginal-rate">{percentFormatter.format(initialEstimate.marginalRate)}</strong>
           </div>
         </div>
+
+        <details class="tax-report" open>
+          <summary>{copy.actions.viewReport}</summary>
+          <div class="tax-report-table">
+            <div><span>{copy.results.standardDeduction}</span><strong id="report-standard-deduction">{currencyFormatter.format(initialEstimate.standardDeduction)}</strong></div>
+            <div><span>{copy.results.itemizedDeductions}</span><strong id="report-itemized-deductions">{currencyFormatter.format(initialEstimate.itemizedDeductions)}</strong></div>
+            <div><span>{copy.results.deductionUsed}</span><strong id="report-deduction-used">{currencyFormatter.format(initialEstimate.deductionsUsed)}</strong></div>
+            <div><span>{copy.results.deductionMethod}</span><strong id="report-deduction-method">{copy.deductionMethods[initialEstimate.deductionMethod]}</strong></div>
+            <div><span>{copy.results.totalAdjustments}</span><strong id="report-total-adjustments">{currencyFormatter.format(initialEstimate.totalAdjustments)}</strong></div>
+            <div><span>{copy.results.taxBeforeCredits}</span><strong id="report-tax-before-credits">{currencyFormatter.format(initialEstimate.taxBeforeCredits)}</strong></div>
+            <div><span>{copy.results.totalCredits}</span><strong id="report-total-credits">{currencyFormatter.format(initialEstimate.totalNonrefundableCredits)}</strong></div>
+            <div><span>{copy.results.totalPayments}</span><strong id="report-total-payments">{currencyFormatter.format(initialEstimate.totalPayments)}</strong></div>
+          </div>
+        </details>
+
         <p class="editorial-text tax-results-note">{copy.results.note}</p>
       </aside>
     </div>
   </div>
 </section>
 
-<script define:vars={{
-  labels: copy.results,
-  locale: lang === 'es' ? 'es-ES' : 'en-US',
-  standardDeductionDefaults: standardDeductions,
-  initialValues,
-}}>
+<script id="tax-calculator-config" type="application/json" set:html={calculatorConfig}></script>
+
+<script>
   import { calculateTaxEstimate } from '../lib/tax-calculator';
 
-  const form = document.getElementById('tax-calculator-form') as HTMLFormElement | null;
-  const statusField = document.getElementById('filing-status') as HTMLSelectElement | null;
-  const deductionsField = document.getElementById('deductions') as HTMLInputElement | null;
-  const taxableIncome = document.getElementById('taxable-income');
-  const estimatedTax = document.getElementById('estimated-tax');
-  const effectiveRate = document.getElementById('effective-rate');
-  const balanceLabel = document.getElementById('balance-label');
-  const refundOrOwed = document.getElementById('refund-or-owed');
-  const currencyFormatter = new Intl.NumberFormat(locale, {
+  const configNode = document.getElementById('tax-calculator-config');
+  const config = configNode?.textContent ? JSON.parse(configNode.textContent) : {};
+  const form = document.getElementById('tax-calculator-form');
+  const statusField = document.getElementById('filing-status');
+  const currencyFormatter = new Intl.NumberFormat(config.locale || 'en-US', {
     style: 'currency',
     currency: 'USD',
     maximumFractionDigits: 0,
   });
-  const percentFormatter = new Intl.NumberFormat(locale, {
+  const percentFormatter = new Intl.NumberFormat(config.locale || 'en-US', {
     style: 'percent',
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   });
-  let lastStandardDeduction = Number(initialValues.deductions);
 
-  const readAmount = (name: string) => {
-    const field = form?.elements.namedItem(name) as HTMLInputElement | null;
-    return Number(field?.value || 0);
+  const amountFields = [
+    'childDependents',
+    'otherDependents',
+    'wages',
+    'spouseWages',
+    'taxableInterest',
+    'taxExemptInterest',
+    'ordinaryDividends',
+    'qualifiedDividends',
+    'shortTermCapitalGains',
+    'longTermCapitalGains',
+    'businessIncome',
+    'retirementIncome',
+    'socialSecurityBenefits',
+    'unemploymentIncome',
+    'otherIncome',
+    'traditionalIraDeduction',
+    'studentLoanInterest',
+    'otherAdjustments',
+    'medicalExpenses',
+    'stateLocalTaxes',
+    'mortgageInterest',
+    'charitableGifts',
+    'otherItemizedDeductions',
+    'federalWithholding',
+    'estimatedTaxPayments',
+    'additionalNonrefundableCredits',
+    'refundableCredits',
+  ];
+  const checkboxFields = ['taxpayerOver65', 'taxpayerBlind', 'spouseOver65', 'spouseBlind'];
+
+  const getElement = (id) => document.getElementById(id);
+  const setText = (id, value) => {
+    const element = getElement(id);
+    if (element) element.textContent = value;
+  };
+  const readAmount = (name) => {
+    const field = form?.elements.namedItem(name);
+    const value = Number(field?.value ?? 0);
+    return Number.isFinite(value) ? Math.max(0, value) : 0;
+  };
+  const readCheckbox = (name) => {
+    const field = form?.elements.namedItem(name);
+    return Boolean(field?.checked);
+  };
+  const readValue = (name) => {
+    const field = form?.elements.namedItem(name);
+    return field?.value ?? '';
+  };
+  const formatCurrency = (value) => currencyFormatter.format(Math.abs(Number(value) || 0));
+  const formatSignedCurrency = (value) => currencyFormatter.format(Number(value) || 0);
+  const formatPercent = (value) => percentFormatter.format(Number(value) || 0);
+
+  const collectInput = () => {
+    const input = {
+      filingStatus: readValue('filingStatus') || 'single',
+      dependentStatus: readValue('dependentStatus') || 'no',
+    };
+
+    amountFields.forEach((fieldName) => {
+      input[fieldName] = readAmount(fieldName);
+    });
+    checkboxFields.forEach((fieldName) => {
+      input[fieldName] = readCheckbox(fieldName);
+    });
+
+    return input;
+  };
+
+  const updateSpouseFields = () => {
+    const showSpouseFields = statusField?.value === 'marriedJoint' || statusField?.value === 'qualifiedSurvivingSpouse';
+    document.querySelectorAll('[data-spouse-field="true"]').forEach((element) => {
+      element.toggleAttribute('hidden', !showSpouseFields);
+    });
   };
 
   const updateEstimate = () => {
-    if (!form || !statusField || !taxableIncome || !estimatedTax || !effectiveRate || !balanceLabel || !refundOrOwed) {
-      return;
-    }
+    if (!form) return;
 
-    const estimate = calculateTaxEstimate({
-      filingStatus: statusField.value,
-      income: readAmount('income'),
-      deductions: readAmount('deductions'),
-      credits: readAmount('credits'),
-      withholding: readAmount('withholding'),
-    });
+    const estimate = calculateTaxEstimate(collectInput());
+    const labels = config.labels || {};
+    const methods = config.methods || {};
+    const balanceCard = getElement('tax-balance-card');
+    const isRefund = estimate.refundOrOwed >= 0;
 
-    taxableIncome.textContent = currencyFormatter.format(estimate.taxableIncome);
-    estimatedTax.textContent = currencyFormatter.format(estimate.estimatedTax);
-    effectiveRate.textContent = percentFormatter.format(estimate.effectiveTaxRate);
-    balanceLabel.textContent = estimate.refundOrOwed >= 0 ? labels.refund : labels.owed;
-    refundOrOwed.textContent = currencyFormatter.format(Math.abs(estimate.refundOrOwed));
+    setText('tax-summary-headline', (labels.headlineTemplate || '{tax}').replace('{tax}', formatSignedCurrency(estimate.estimatedTax)));
+    setText(
+      'tax-summary-text',
+      (labels.dynamicSummary || '')
+        .replace('{tax}', formatSignedCurrency(estimate.estimatedTax))
+        .replace('{income}', formatSignedCurrency(estimate.totalIncome))
+        .replace('{payments}', formatSignedCurrency(estimate.totalPayments))
+        .replace('{balance}', formatCurrency(estimate.refundOrOwed))
+        .replace('{balanceLabel}', isRefund ? labels.refundLower || labels.refund : labels.owedLower || labels.owed)
+        .replace('{bracket}', formatPercent(estimate.marginalRate)),
+    );
+    setText('balance-label', isRefund ? labels.refund : labels.owed);
+    setText('refund-or-owed', formatCurrency(estimate.refundOrOwed));
+    balanceCard?.classList.toggle('is-refund', isRefund);
+    balanceCard?.classList.toggle('is-owed', !isRefund);
+
+    setText('total-income', formatSignedCurrency(estimate.totalIncome));
+    setText('adjusted-gross-income', formatSignedCurrency(estimate.adjustedGrossIncome));
+    setText('taxable-income', formatSignedCurrency(estimate.taxableIncome));
+    setText('estimated-tax', formatSignedCurrency(estimate.estimatedTax));
+    setText('effective-rate', formatPercent(estimate.effectiveTaxRate));
+    setText('marginal-rate', formatPercent(estimate.marginalRate));
+    setText('standard-deduction-preview', formatSignedCurrency(estimate.standardDeduction));
+
+    setText('report-standard-deduction', formatSignedCurrency(estimate.standardDeduction));
+    setText('report-itemized-deductions', formatSignedCurrency(estimate.itemizedDeductions));
+    setText('report-deduction-used', formatSignedCurrency(estimate.deductionsUsed));
+    setText('report-deduction-method', methods[estimate.deductionMethod] || estimate.deductionMethod);
+    setText('report-total-adjustments', formatSignedCurrency(estimate.totalAdjustments));
+    setText('report-tax-before-credits', formatSignedCurrency(estimate.taxBeforeCredits));
+    setText('report-total-credits', formatSignedCurrency(estimate.totalNonrefundableCredits));
+    setText('report-total-payments', formatSignedCurrency(estimate.totalPayments));
   };
 
   form?.addEventListener('submit', (event) => {
@@ -172,25 +518,17 @@ const statusOptions = Object.entries(copy.statuses) as Array<[FilingStatus, stri
 
   form?.addEventListener('reset', () => {
     window.setTimeout(() => {
-      lastStandardDeduction = Number(initialValues.deductions);
+      updateSpouseFields();
       updateEstimate();
     }, 0);
   });
 
-  statusField?.addEventListener('change', () => {
-    if (!deductionsField || !statusField) {
-      return;
-    }
-
-    const currentDeduction = Number(deductionsField.value || 0);
-    const nextStandardDeduction = Number(standardDeductionDefaults[statusField.value] ?? currentDeduction);
-    if (currentDeduction === lastStandardDeduction) {
-      deductionsField.value = String(nextStandardDeduction);
-    }
-    lastStandardDeduction = nextStandardDeduction;
+  form?.addEventListener('input', updateEstimate);
+  form?.addEventListener('change', () => {
+    updateSpouseFields();
     updateEstimate();
   });
 
-  form?.addEventListener('input', updateEstimate);
-  form?.addEventListener('change', updateEstimate);
+  updateSpouseFields();
+  updateEstimate();
 </script>
