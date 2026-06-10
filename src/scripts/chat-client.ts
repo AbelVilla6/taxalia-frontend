@@ -326,6 +326,16 @@ export function init(options: InitOptions = {}): void {
       launcherEl.hidden = !closed;
     };
 
+    // Pre-rendered welcome option buttons (server-side from ChatWidget.astro).
+    // Looked up here so both the send() path and the button click handlers can
+    // dismiss the container on the first user message regardless of origin.
+    const welcomeOptionsEl = widget.querySelector<HTMLElement>('[data-welcome-options]');
+    const dismissWelcomeOptions = (): void => {
+      if (welcomeOptionsEl && !welcomeOptionsEl.hidden) {
+        welcomeOptionsEl.hidden = true;
+      }
+    };
+
     const setBusy = (busy: boolean): void => {
       sendEl.disabled = busy || inputEl.value.trim().length === 0;
       inputEl.readOnly = busy;
@@ -418,6 +428,7 @@ export function init(options: InitOptions = {}): void {
       const trimmed = text.trim();
       if (!trimmed) return;
 
+      dismissWelcomeOptions();
       clearError();
       const userMsg: ChatMessage = { role: 'user', content: trimmed };
       history.push(userMsg);
@@ -625,5 +636,19 @@ export function init(options: InitOptions = {}): void {
       syncLauncherState(false);
       inputEl.focus();
     });
+
+    // Wire up welcome option buttons (server-side from ChatWidget.astro).
+    // dismissWelcomeOptions() is hoisted above so the send() path also hides
+    // the container when the user types a message instead of clicking a button.
+    if (welcomeOptionsEl) {
+      const welcomeButtons = welcomeOptionsEl.querySelectorAll<HTMLButtonElement>('.chat-msg-option');
+      welcomeButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const message = btn.dataset.message ?? '';
+          if (!message.trim() || active) return;
+          void send(message);
+        });
+      });
+    }
   })();
 }

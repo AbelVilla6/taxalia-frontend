@@ -46,6 +46,18 @@ const apiBase = (import.meta.env.PUBLIC_CHAT_API_BASE ?? 'http://localhost:4324'
     <div id="chat-messages" class="chat-messages" role="log" aria-live="polite" aria-relevant="additions">
       <div class="chat-msg chat-msg--assistant">
         <p class="chat-msg-bubble">{copy.bubble}</p>
+        <div class="chat-msg-options" data-welcome-options>
+          {copy.welcomeOptions.map((opt) => (
+            <button
+              type="button"
+              class="chat-msg-option"
+              data-message={opt.message}
+              data-option-id={opt.id}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
     <p id="chat-typing" class="chat-typing" hidden>{copy.typing}</p>

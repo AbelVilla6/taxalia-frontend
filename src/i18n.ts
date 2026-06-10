@@ -258,6 +258,12 @@ export const ui = {
       humanHandoff: 'Talk to a person',
       disclaimer: 'AI can make mistakes. This is only to help clarify your questions.',
       partialWarning: 'Some answers may be incomplete.',
+      welcomeOptions: [
+        { id: 'income-tax', label: 'Income Tax', message: 'Tell me about your income tax services' },
+        { id: 'business-accounting', label: 'Business Accounting', message: 'Tell me about your business accounting services' },
+        { id: 'irs-tax-resolution', label: 'IRS Tax Resolution', message: 'Tell me about your IRS tax resolution services' },
+        { id: 'book-appointment', label: 'Book an Appointment', message: "I'd like to book an appointment" },
+      ],
     },
     pages: {
       about: {
@@ -654,6 +660,12 @@ export const ui = {
       humanHandoff: 'Hablar con una persona',
       disclaimer: 'La IA puede equivocarse.',
       partialWarning: 'Algunas respuestas pueden estar incompletas.',
+      welcomeOptions: [
+        { id: 'income-tax', label: 'Impuesto sobre la renta', message: 'Cuéntame sobre sus servicios de impuestos sobre la renta' },
+        { id: 'business-accounting', label: 'Contabilidad empresarial', message: 'Cuéntame sobre sus servicios de contabilidad empresarial' },
+        { id: 'irs-tax-resolution', label: 'Resolución de deudas con el IRS', message: 'Cuéntame sobre sus servicios de resolución de deudas con el IRS' },
+        { id: 'book-appointment', label: 'Agendar una cita', message: 'Quiero agendar una cita' },
+      ],
     },
     pages: {
       about: {
