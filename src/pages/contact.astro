@@ -9,6 +9,8 @@ const lang = 'en';
 const copy = ui[lang];
 const backendBase = (import.meta.env.PUBLIC_CHAT_API_BASE ?? 'http://localhost:4324').replace(/\/+$/, '');
 const mailtoHref = contactMailto(lang);
+const calcomUrl = (import.meta.env.PUBLIC_CALCOM_URL ?? 'https://cal.com/felipe-costa').replace(/\/+$/, '');
+const calcomLink = calcomUrl.replace('https://cal.com/', '');
 ---
 
 <Base
@@ -92,8 +94,62 @@ const mailtoHref = contactMailto(lang);
         </div>
       </div>
     </section>
+    <section id="booking" class="section" style="background:var(--color-bg-soft);">
+      <div class="container">
+        <p class="eyebrow">Free Consultation</p>
+        <h2 class="section-title" style="font-size:1.8rem;text-transform:none;font-weight:500;margin-bottom:2rem;">
+          Schedule Your Appointment
+        </h2>
+        <div
+          id="cal-booking-inline"
+          style="width:100%;min-height:600px;border-radius:var(--radius-md);overflow:hidden;"
+        ></div>
+      </div>
+    </section>
   </main>
   <Footer lang={lang} />
+
+  <script is:inline define:vars={{ calcomLink }}>
+    (function (C, A, L) {
+      let p = function (a, ar) { a.q.push(ar); };
+      let d = C.document;
+      C.Cal = C.Cal || function () {
+        let cal = C.Cal;
+        let ar = arguments;
+        if (!cal.loaded) {
+          cal.ns = {};
+          cal.q = cal.q || [];
+          d.head.appendChild(d.createElement('script')).src = A;
+          cal.loaded = true;
+        }
+        if (ar[0] === L) {
+          const api = function () { p(api, arguments); };
+          const namespace = ar[1];
+          api.q = api.q || [];
+          if (typeof namespace === 'string') {
+            cal.ns[namespace] = cal.ns[namespace] || api;
+            p(cal.ns[namespace], ar);
+            p(cal, ['-init-wasm', ar[1], ar[2]]);
+          } else {
+            p(cal, ar);
+          }
+          return;
+        }
+        p(cal, ar);
+      };
+    })(window, 'https://app.cal.com/embed/embed.js', 'init');
+
+    Cal('init', 'taxalia-booking', { origin: 'https://cal.com' });
+    Cal.ns['taxalia-booking']('inline', {
+      elementOrSelector: '#cal-booking-inline',
+      config: { layout: 'month_view' },
+      calLink: calcomLink,
+    });
+    Cal.ns['taxalia-booking']('ui', {
+      hideEventTypeDetails: false,
+      layout: 'month_view',
+    });
+  </script>
 
   <script define:vars={{ backendBase, contactEmail, mailtoHref, messages: {
     sending: copy.pages.contact.sending,
