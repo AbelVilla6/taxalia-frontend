@@ -1161,6 +1161,14 @@
   display: none;
 }
 
+html[data-chat-state='closed'] .chat-widget {
+  display: none;
+}
+
+html[data-chat-state='closed'] .chat-launcher {
+  display: flex;
+}
+
 .chat-launcher {
   position: fixed;
   right: 1.5rem;

@@ -321,6 +321,7 @@ export function init(options: InitOptions = {}): void {
     };
 
     const syncLauncherState = (closed: boolean): void => {
+      document.documentElement.dataset.chatState = closed ? 'closed' : 'open';
       widget.hidden = closed;
       launcherEl.hidden = !closed;
     };

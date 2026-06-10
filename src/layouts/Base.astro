@@ -36,6 +36,20 @@ const alternateEs = new URL(localizePath('es', basePath), site).toString();
     <link rel="alternate" hreflang={languages.es.htmlLang} href={alternateEs} />
     <link rel="alternate" hreflang="x-default" href={alternateEn} />
 
+    <script is:inline>
+      (() => {
+        try {
+          const pathname = window.location.pathname.replace(/\/+$/, '') || '/';
+          const isHome = pathname === '/' || pathname === '/es';
+          const stored = window.localStorage.getItem('taxalia:chat-state');
+          const state = stored === 'open' || stored === 'closed' ? stored : (isHome ? 'open' : 'closed');
+          document.documentElement.dataset.chatState = state;
+        } catch {
+          document.documentElement.dataset.chatState = 'open';
+        }
+      })();
+    </script>
+
     <!-- Base stylesheet (clinica-premium) -->
     <link rel="stylesheet" href="/assets/css/clinica-premium.css" />
     <!-- LB & CO overrides -->
