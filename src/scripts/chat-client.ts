@@ -1,3 +1,5 @@
+import { basePathFromPathname } from '../i18n';
+
 export interface ChatConfig {
   apiBase: string;
   lang: 'en' | 'es';
@@ -37,7 +39,7 @@ interface ServerSseEvent {
 
 const DEFAULT_TIMEOUT_MS = 30_000;
 const CONFIG_WAIT_MS = 1_000;
-const CHAT_CLOSED_STORAGE_KEY = 'taxalia:chat-closed';
+const CHAT_STATE_STORAGE_KEY = 'taxalia:chat-state';
 const TAXALIA_OPTIONS_BLOCK_RE = /```taxalia-options-json\s*[\s\S]*?```/gi;
 const TAXALIA_OPTIONS_INCOMPLETE_BLOCK_RE = /```taxalia-options-json\s*[\s\S]*$/i;
 
@@ -281,6 +283,8 @@ export function init(options: InitOptions = {}): void {
       return;
     }
 
+    const isHomePage = basePathFromPathname(window.location.pathname) === '/';
+
     const messagesEl = widget.querySelector<HTMLElement>('#chat-messages');
     const formEl = widget.querySelector<HTMLFormElement>('#chat-form');
     const inputEl = widget.querySelector<HTMLInputElement>('#chat-text');
@@ -299,21 +303,18 @@ export function init(options: InitOptions = {}): void {
     let active: ActiveRequest | null = null;
     const history: ChatMessage[] = [];
     const partialCopy = widget.dataset.chatPartial ?? 'Some answers may be incomplete.';
-    const isChatClosedPersisted = (): boolean => {
+    const getStoredChatState = (): 'open' | 'closed' | null => {
       try {
-        return window.localStorage.getItem(CHAT_CLOSED_STORAGE_KEY) === 'true';
+        const value = window.localStorage.getItem(CHAT_STATE_STORAGE_KEY);
+        return value === 'open' || value === 'closed' ? value : null;
       } catch {
-        return false;
+        return null;
       }
     };
 
-    const setChatClosedPersisted = (closed: boolean): void => {
+    const setStoredChatState = (state: 'open' | 'closed'): void => {
       try {
-        if (closed) {
-          window.localStorage.setItem(CHAT_CLOSED_STORAGE_KEY, 'true');
-        } else {
-          window.localStorage.removeItem(CHAT_CLOSED_STORAGE_KEY);
-        }
+        window.localStorage.setItem(CHAT_STATE_STORAGE_KEY, state);
       } catch {
         // Ignore storage failures and keep the chat usable.
       }
@@ -370,7 +371,8 @@ export function init(options: InitOptions = {}): void {
       messagesEl.scrollTop = messagesEl.scrollHeight;
     };
 
-    syncLauncherState(isChatClosedPersisted());
+    const initialChatState = getStoredChatState() ?? (isHomePage ? 'open' : 'closed');
+    syncLauncherState(initialChatState === 'closed');
 
     const cancelActive = (): void => {
       if (!active) return;
@@ -608,7 +610,7 @@ export function init(options: InitOptions = {}): void {
 
     closeEl.addEventListener('click', () => {
       cancelActive();
-      setChatClosedPersisted(true);
+      setStoredChatState('closed');
       syncLauncherState(true);
       launcherEl.focus();
     });
@@ -618,7 +620,7 @@ export function init(options: InitOptions = {}): void {
     });
 
     launcherEl.addEventListener('click', () => {
-      setChatClosedPersisted(false);
+      setStoredChatState('open');
       syncLauncherState(false);
       inputEl.focus();
     });
