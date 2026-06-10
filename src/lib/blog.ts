@@ -7,8 +7,14 @@
 
 import type { Lang } from '../i18n';
 
+// Resolved at runtime via process.env: `import.meta.env` is statically
+// replaced at build time, which would bake the localhost fallback into the
+// production bundle. process.env keeps the deployed value working without a
+// rebuild; import.meta.env covers dev where Vite loads .env files.
 const BACKEND_API_BASE = (
-  import.meta.env.BACKEND_API_BASE ?? 'http://localhost:4324'
+  process.env.BACKEND_API_BASE ??
+  import.meta.env.BACKEND_API_BASE ??
+  'http://localhost:4324'
 ).replace(/\/+$/, '');
 
 export interface PostSummary {
