@@ -117,14 +117,14 @@ const paymentFields = [
     <div class="tax-calculator-heading">
       <div>
         <h1 class="section-title" style="text-transform:none;font-weight:500;">{copy.title}</h1>
-        <p class="section-lead">{copy.lead}</p>
+        <p class="section-lead tax-calculator-lead">{copy.lead}</p>
       </div>
       <p class="tax-calculator-note">{copy.disclaimer}</p>
     </div>
   </div>
 </section>
 
-<section class="section tax-calculator-section">
+<section class="section tax-calculator-section tax-calculator-section-tight">
   <div class="container">
     <div class="tax-calculator-grid tax-calculator-grid-expanded">
       <form id="tax-calculator-form" class="tax-calculator-card tax-calculator-form-card" aria-describedby="tax-calculator-note">
@@ -138,14 +138,16 @@ const paymentFields = [
 
         <p id="tax-calculator-note" class="editorial-text tax-form-help">{copy.formHelp}</p>
 
-        <section class="tax-form-section" aria-labelledby="tax-section-filing">
-          <div class="tax-form-section-title">
+        <details class="tax-form-section tax-form-details" data-section="filing" open>
+          <summary class="tax-form-section-title">
             <span>1</span>
             <div>
               <h3 id="tax-section-filing">{copy.sections.filing.title}</h3>
               <p>{copy.sections.filing.description}</p>
             </div>
-          </div>
+          </summary>
+
+          <div class="tax-form-section-body">
 
           <div class="tax-form-grid">
             <div class="form-field tax-form-field tax-form-field-wide">
@@ -183,16 +185,19 @@ const paymentFields = [
               </div>
             ))}
           </div>
-        </section>
+          </div>
+        </details>
 
-        <section class="tax-form-section" aria-labelledby="tax-section-income">
-          <div class="tax-form-section-title">
+        <details class="tax-form-section tax-form-details" data-section="income">
+          <summary class="tax-form-section-title">
             <span>2</span>
             <div>
               <h3 id="tax-section-income">{copy.sections.income.title}</h3>
               <p>{copy.sections.income.description}</p>
             </div>
-          </div>
+          </summary>
+
+          <div class="tax-form-section-body">
 
           <div class="tax-form-grid">
             {incomeFields.map((field) => (
@@ -212,16 +217,19 @@ const paymentFields = [
               </div>
             ))}
           </div>
-        </section>
+          </div>
+        </details>
 
-        <section class="tax-form-section" aria-labelledby="tax-section-adjustments">
-          <div class="tax-form-section-title">
+        <details class="tax-form-section tax-form-details" data-section="adjustments">
+          <summary class="tax-form-section-title">
             <span>3</span>
             <div>
               <h3 id="tax-section-adjustments">{copy.sections.adjustments.title}</h3>
               <p>{copy.sections.adjustments.description}</p>
             </div>
-          </div>
+          </summary>
+
+          <div class="tax-form-section-body">
 
           <div class="tax-form-grid">
             {adjustmentFields.map((field) => (
@@ -241,16 +249,19 @@ const paymentFields = [
               </div>
             ))}
           </div>
-        </section>
+          </div>
+        </details>
 
-        <section class="tax-form-section" aria-labelledby="tax-section-deductions">
-          <div class="tax-form-section-title">
+        <details class="tax-form-section tax-form-details" data-section="deductions">
+          <summary class="tax-form-section-title">
             <span>4</span>
             <div>
               <h3 id="tax-section-deductions">{copy.sections.deductions.title}</h3>
               <p>{copy.sections.deductions.description}</p>
             </div>
-          </div>
+          </summary>
+
+          <div class="tax-form-section-body">
 
           <div class="tax-checkbox-grid">
             <label class="tax-checkbox"><input type="checkbox" name="taxpayerOver65" checked={isChecked(initialValues.taxpayerOver65)} /> {copy.fields.taxpayerOver65}</label>
@@ -282,16 +293,19 @@ const paymentFields = [
               </div>
             ))}
           </div>
-        </section>
+          </div>
+        </details>
 
-        <section class="tax-form-section" aria-labelledby="tax-section-payments">
-          <div class="tax-form-section-title">
+        <details class="tax-form-section tax-form-details" data-section="payments">
+          <summary class="tax-form-section-title">
             <span>5</span>
             <div>
               <h3 id="tax-section-payments">{copy.sections.payments.title}</h3>
               <p>{copy.sections.payments.description}</p>
             </div>
-          </div>
+          </summary>
+
+          <div class="tax-form-section-body">
 
           <div class="tax-form-grid">
             {paymentFields.map((field) => (
@@ -310,7 +324,8 @@ const paymentFields = [
               </div>
             ))}
           </div>
-        </section>
+          </div>
+        </details>
       </form>
 
       <aside class="tax-calculator-card tax-results-card" aria-live="polite">
@@ -519,11 +534,16 @@ const paymentFields = [
   form?.addEventListener('reset', () => {
     window.setTimeout(() => {
       updateSpouseFields();
+      document.querySelectorAll('.tax-form-details').forEach((details, index) => {
+        (details as HTMLDetailsElement).open = index === 0;
+      });
       updateEstimate();
     }, 0);
   });
 
-  form?.addEventListener('input', updateEstimate);
+  form?.addEventListener('input', () => {
+    updateEstimate();
+  });
   form?.addEventListener('change', () => {
     updateSpouseFields();
     updateEstimate();

@@ -303,6 +303,7 @@
 /* ---- Tax calculator ---- */
 .tax-calculator-hero {
   background: var(--color-bg-soft);
+  padding-block: 0.85rem;
 }
 
 .tax-calculator-heading {
@@ -322,16 +323,28 @@
 }
 
 .tax-calculator-note {
-  padding: 1rem;
+  padding: 0.7rem 0.85rem;
   border-left: 3px solid var(--color-accent);
   color: var(--color-text-soft);
   background: rgba(255, 255, 255, 0.72);
-  font-size: var(--text-sm);
-  line-height: 1.65;
+  font-size: var(--text-xs);
+  line-height: 1.45;
+  max-width: 24rem;
+}
+
+.tax-calculator-lead {
+  max-width: 52rem;
+  font-size: calc(var(--text-base) * 0.96);
+  line-height: 1.52;
 }
 
 .tax-calculator-section {
   background: var(--color-bg);
+  margin-top: 0.9rem;
+}
+
+.tax-calculator-section-tight {
+  padding-top: 0.25rem;
 }
 
 .tax-calculator-grid {
@@ -389,6 +402,55 @@
   background: rgba(250, 247, 240, 0.45);
 }
 
+.tax-form-details {
+  transition:
+    border-color var(--speed, 180ms) var(--ease, ease),
+    box-shadow var(--speed, 180ms) var(--ease, ease),
+    background var(--speed, 180ms) var(--ease, ease);
+}
+
+.tax-form-details[data-locked='true'] {
+  opacity: 0.72;
+}
+
+.tax-form-details {
+  overflow: hidden;
+}
+
+.tax-form-details > summary {
+  list-style: none;
+}
+
+.tax-form-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.tax-form-details > summary.tax-form-section-title {
+  cursor: pointer;
+}
+
+.tax-form-details[data-locked='true'] > summary.tax-form-section-title {
+  cursor: not-allowed;
+}
+
+.tax-form-details[open] > summary {
+  margin-bottom: 0.15rem;
+}
+
+.tax-form-details[open] {
+  background: rgba(250, 247, 240, 0.6);
+  box-shadow: var(--shadow-sm);
+}
+
+.tax-form-details[open]:not([data-locked='true']) {
+  opacity: 1;
+}
+
+.tax-form-section-body {
+  display: grid;
+  gap: 1rem;
+}
+
 .tax-form-section-title {
   display: flex;
   gap: 0.8rem;
@@ -413,6 +475,19 @@
   color: var(--color-primary-dark);
   font-family: var(--font-heading);
   font-size: 1.15rem;
+}
+
+.tax-form-section-title::after {
+  content: '−';
+  margin-left: auto;
+  color: var(--color-primary-dark);
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.tax-form-details:not([open]) .tax-form-section-title::after {
+  content: '+';
 }
 
 .tax-form-section-title p,
