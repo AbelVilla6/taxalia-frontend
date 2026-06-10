@@ -319,10 +319,10 @@ export const ui = {
       },
       taxCalculator: {
         eyebrow: 'Tax Calculator',
-        title: '1040 Tax Calculator',
-        formTitle: '1040 Tax Estimator for {year}',
+        title: 'Tax Calculator',
+        formTitle: 'Tax Calculator for {year}',
         lead:
-          'Estimate your U.S. federal income tax, refund or balance due using a more complete 1040-style calculator.',
+          'Estimate your U.S. federal income tax, refund or balance due using a more complete federal tax calculator.',
         disclaimer:
           'This calculator is an educational estimate for 2026 federal income tax planning. It does not replace professional tax advice and does not include state tax, AMT, self-employment tax, foreign exclusions, treaty positions, penalties, or every IRS rule.',
         formHelp:
@@ -720,10 +720,10 @@ export const ui = {
       },
       taxCalculator: {
         eyebrow: 'Calculadora fiscal',
-        title: 'Calculadora fiscal 1040',
-        formTitle: 'Estimador fiscal 1040 para {year}',
+        title: 'Calculadora fiscal',
+        formTitle: 'Calculadora fiscal para {year}',
         lead:
-          'Estima tu impuesto federal de EE. UU., reembolso o saldo a pagar con una calculadora más completa, estilo formulario 1040.',
+          'Estima tu impuesto federal de EE. UU., reembolso o saldo a pagar con una calculadora fiscal más completa.',
         disclaimer:
           'Esta calculadora es una estimación educativa para planificar el impuesto federal de 2026. No sustituye el asesoramiento fiscal profesional y no incluye impuestos estatales, AMT, impuesto de autónomos, exclusiones de ingresos extranjeros, tratados, sanciones ni todas las reglas del IRS.',
         formHelp:
