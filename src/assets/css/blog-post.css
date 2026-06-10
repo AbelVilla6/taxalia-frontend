@@ -299,6 +299,36 @@
   padding-top: clamp(2.5rem, 4vw, 3.5rem);
 }
 
+/* Wide screens: TOC becomes a sticky left sidebar next to the article body.
+   Browsers without :has() keep the stacked single-column fallback. */
+@media (min-width: 1024px) {
+  .blog-post-detail__layout:has(.blog-toc) {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 820px);
+    column-gap: clamp(2rem, 4vw, 3.5rem);
+    justify-content: center;
+    align-items: start;
+    width: min(100% - 2rem, 1180px);
+    margin-inline: auto;
+  }
+
+  .blog-post-detail__layout:has(.blog-toc) .blog-toc {
+    position: sticky;
+    top: 5.5rem;
+    width: auto;
+    margin-inline: 0;
+    /* Lines up with the body's top padding so both columns start together. */
+    margin-top: clamp(5rem, 8vw, 7rem);
+    max-height: calc(100vh - 7rem);
+    overflow: auto;
+  }
+
+  .blog-post-detail__layout:has(.blog-toc) .blog-post-detail__body {
+    width: 100%;
+    padding-top: clamp(5rem, 8vw, 7rem);
+  }
+}
+
 .blog-toc__title {
   margin: 0 0 0.75rem;
   color: var(--color-primary-dark, #4c362d);

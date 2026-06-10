@@ -87,9 +87,10 @@ const dateFmt = { day: '2-digit', month: 'long', year: 'numeric' } as const;
             )}
           </header>
 
-          {post.toc.length > 0 && <BlogTableOfContents entries={post.toc} lang={lang} />}
-
-          <div class="blog-post-detail__body" set:html={post.contentHtml} />
+          <div class="blog-post-detail__layout">
+            {post.toc.length > 0 && <BlogTableOfContents entries={post.toc} lang={lang} />}
+            <div class="blog-post-detail__body" set:html={post.contentHtml} />
+          </div>
         </article>
       </main>
 
