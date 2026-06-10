@@ -60,6 +60,8 @@ export interface PostDetail extends PostSummary {
   seo: PostSeo | null;
   toc: TocEntry[];
   articleJsonLd: Record<string, unknown> | null;
+  /** Hand-curated JSON-LD (e.g. FAQPage) stored with the post, if any. */
+  customJsonLd: Record<string, unknown> | null;
 }
 
 /**

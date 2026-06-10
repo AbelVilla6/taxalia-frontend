@@ -40,6 +40,9 @@ const dateFmt = { day: '2-digit', month: 'long', year: 'numeric' } as const;
         {post.articleJsonLd && (
           <script type="application/ld+json" set:html={jsonLdForScript(post.articleJsonLd)} />
         )}
+        {post.customJsonLd && (
+          <script type="application/ld+json" set:html={jsonLdForScript(post.customJsonLd)} />
+        )}
       </Fragment>
 
       <Header activePage="blog" lang={lang} />
