@@ -1,6 +1,7 @@
 ---
 import '../assets/css/lb-co.css';
 import { basePathFromPathname, languages, localizePath, type Lang } from '../i18n';
+import ChatWidget from '../components/ChatWidget.astro';
 
 export interface Props {
   title?: string;
@@ -17,6 +18,7 @@ const {
 const htmlLang = languages[lang].htmlLang;
 const site = Astro.site ?? new URL('https://lbcoglobaladvisors.com');
 const basePath = basePathFromPathname(Astro.url.pathname);
+const showChat = basePath !== '/contact';
 const canonical = new URL(localizePath(lang, basePath), site).toString();
 const alternateEn = new URL(localizePath('en', basePath), site).toString();
 const alternateEs = new URL(localizePath('es', basePath), site).toString();
@@ -52,6 +54,7 @@ const alternateEs = new URL(localizePath('es', basePath), site).toString();
   </head>
   <body>
     <slot />
+    {showChat && <ChatWidget lang={lang} />}
 
     <script>
       // Sticky header scroll class
@@ -89,11 +92,14 @@ const alternateEs = new URL(localizePath('es', basePath), site).toString();
       });
 
       // Chat widget bootstrap
-      import('../scripts/chat-client.ts').then(({ init }) => {
-        init({ mount: '#chat-widget', config: '#chat-config' });
-      }).catch((err) => {
-        console.error('[chat] failed to load chat-client.ts', err);
-      });
+      const chatWidget = document.getElementById('chat-widget');
+      if (chatWidget) {
+        import('../scripts/chat-client.ts').then(({ init }) => {
+          init({ mount: '#chat-widget', config: '#chat-config' });
+        }).catch((err) => {
+          console.error('[chat] failed to load chat-client.ts', err);
+        });
+      }
     </script>
   </body>
 </html>

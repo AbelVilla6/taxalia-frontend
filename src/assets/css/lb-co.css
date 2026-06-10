@@ -175,6 +175,38 @@
   gap: 0.45rem;
 }
 
+/* ---- About portrait flow ---- */
+.about-portrait {
+  float: right;
+  width: clamp(260px, 38vw, 440px);
+  margin: 0 0 1.5rem 2rem;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  background: var(--color-surface);
+}
+
+.about-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.about-flow::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+@media (max-width: 900px) {
+  .about-portrait {
+    float: none;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto 1.5rem;
+  }
+}
+
 /* ---- Services section ---- */
 .services-section {
   background: var(--color-bg-soft);

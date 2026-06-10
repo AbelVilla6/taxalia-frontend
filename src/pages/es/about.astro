@@ -6,6 +6,7 @@ import { ui } from '../../i18n';
 
 const lang = 'es';
 const copy = ui[lang];
+const about = copy.pages.about;
 ---
 
 <Base
@@ -15,15 +16,64 @@ const copy = ui[lang];
 >
   <Header activePage="about" lang={lang} />
   <main id="main-content">
+    <section class="section" style="padding-top:clamp(2.5rem, 5vw, 5rem);">
+      <div class="container">
+        <div class="about-flow">
+          <div class="about-portrait">
+            <img
+              src="/assets/images/about_us_face.webp"
+              alt={about.imageAlt}
+              width="980"
+              height="1402"
+              loading="eager"
+              decoding="async"
+            />
+          </div>
+
+          <div class="stack" style="--stack-gap:1.25rem;">
+            <p class="eyebrow">{about.eyebrow}</p>
+            <h1 class="section-title" style="text-transform:none;font-weight:500;">
+              {about.title}
+            </h1>
+            <p class="section-lead">{about.lead}</p>
+            {about.intro.map((paragraph) => <p class="editorial-text">{paragraph}</p>)}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--color-bg-soft);">
+      <div class="container">
+        <p class="eyebrow">{about.whoWeServe.eyebrow}</p>
+        <h2 class="section-title" style="font-size:1.9rem;text-transform:none;font-weight:500;">
+          {about.whoWeServe.title}
+        </h2>
+        <div class="grid grid-2" style="--grid-gap:2rem;margin-top:2rem;align-items:start;">
+          <ul class="feature-list">
+            {about.whoWeServe.items.slice(0, 3).map((item) => <li>{item}</li>)}
+          </ul>
+          <ul class="feature-list">
+            {about.whoWeServe.items.slice(3).map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
     <section class="section">
       <div class="container">
-        <p class="eyebrow">{copy.pages.about.eyebrow}</p>
-        <h1 class="section-title" style="text-transform:none;font-weight:500;">
-          {copy.pages.about.title}
-        </h1>
-        <p class="section-lead">
-          {copy.pages.about.lead}
-        </p>
+        <p class="eyebrow">{about.whyChoose.eyebrow}</p>
+        <div class="grid grid-2" style="--grid-gap:2rem;align-items:start;">
+          <div>
+            <h2 class="section-title" style="font-size:1.9rem;text-transform:none;font-weight:500;">
+              {about.whyChoose.title}
+            </h2>
+            <p class="section-lead">{about.whyChoose.intro}</p>
+            <p class="editorial-text" style="margin-top:1rem;">{about.closing}</p>
+          </div>
+          <ul class="feature-list" style="margin-top:0.35rem;">
+            {about.whyChoose.items.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
       </div>
     </section>
   </main>

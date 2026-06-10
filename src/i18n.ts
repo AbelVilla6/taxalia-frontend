@@ -53,8 +53,9 @@ export const ui = {
           'Independent, data-driven advisory and valuation services to help businesses, investors, and professionals make informed decisions across the United States.',
       },
       about: {
-        title: 'About Us - LB & CO Global Advisors',
-        description: 'Learn about LB & CO Global Advisors, our mission, and our team.',
+        title: 'About Us - LB&Co Global Advisors',
+        description:
+          'U.S. tax and accounting services for Americans abroad who prefer clear, personalized support in Spanish.',
       },
       services: {
         title: 'Services - LB & CO Global Advisors',
@@ -102,11 +103,11 @@ export const ui = {
       kicker: 'About Us',
       title: ['Tax guidance for', 'Spanish‑speaking Americans', 'living abroad'],
       text:
-        'We deliver independent, data-driven advisory and valuation services to help businesses, investors, and professionals make informed decisions across the United States.',
+        'We provide U.S. tax and accounting support for Americans abroad, with clear guidance in Spanish and practical help for cross-border compliance.',
       book: 'Book a Consultation',
       explore: 'Explore Our Services',
-      trustLocation: 'Serving clients across the United States',
-      trustValues: 'Independent. Objective. Trusted.',
+      trustLocation: 'Serving clients around the World',
+      trustValues: 'Independent & Trusted.',
       imageAlt: 'Two advisors reviewing financial charts and data in a professional setting',
     },
     services: {
@@ -254,10 +255,44 @@ export const ui = {
     },
     pages: {
       about: {
-        eyebrow: 'Who We Are',
-        title: 'About LB & CO Global Advisors',
+        eyebrow: 'About Us',
+        title: 'U.S. Tax & Accounting Services for Americans Abroad',
         lead:
-          'LB & CO Global Advisors is an independent firm specializing in business advisory, valuations, and financial guidance. We are committed to objectivity, integrity, and data-driven insights that empower our clients to make confident decisions.',
+          'At LB&Co Global Advisors, we specialize in U.S. tax and accounting services for Americans living abroad who prefer to communicate in Spanish.',
+        intro: [
+          'Living overseas does not eliminate your U.S. tax obligations, but understanding and managing those obligations should not be complicated by language barriers. Our mission is to help U.S. citizens, Green Card holders, and dual nationals navigate the complexities of the U.S. tax system with confidence, clarity, and personalized support in Spanish.',
+          'With more than 10 years of experience serving expatriate clients, we understand the unique challenges faced by Americans living outside the United States. From annual tax returns and foreign income reporting to FBAR filings, tax planning, and compliance with international reporting requirements, we provide practical solutions tailored to each client\'s circumstances.',
+          'What sets us apart is our ability to combine technical expertise with clear communication. We know that many Spanish-speaking Americans abroad struggle to find a tax professional who not only understands U.S. tax law but can also explain it in their native language. At LB&Co Global Advisors, we make complex tax matters easy to understand, so you always know where you stand and what comes next.',
+        ],
+        whoWeServe: {
+          eyebrow: 'Who We Serve',
+          title: 'We work with',
+          items: [
+            'U.S. citizens living abroad',
+            'Green Card holders residing outside the United States',
+            'Dual citizens',
+            'Spanish-speaking expatriates and international families',
+            'Freelancers, consultants, and self-employed professionals',
+            'Small business owners with international tax considerations',
+          ],
+        },
+        whyChoose: {
+          eyebrow: 'Why Choose LB&Co Global Advisors',
+          title: 'Why clients choose us',
+          intro:
+            'At LB&Co Global Advisors, we believe that every American abroad deserves access to high-quality tax and accounting services in a language they fully understand. Our goal is to simplify compliance, reduce stress, and help you stay focused on building your life wherever in the world you call home.',
+          items: [
+            'More than 10 years of experience serving Americans abroad',
+            'Specialized expertise in U.S. expatriate taxation',
+            'Native Spanish-speaking professional',
+            'Personalized, responsive service',
+            'Clear guidance without unnecessary tax jargon',
+            'Secure, fully remote services worldwide',
+          ],
+        },
+        closing:
+          'Helping Americans abroad navigate U.S. taxes—with expert guidance in Spanish.',
+        imageAlt: 'LB&Co Global Advisors professional portrait',
       },
       contact: {
         eyebrow: 'Get In Touch',
@@ -270,6 +305,11 @@ export const ui = {
         message: 'Message',
         messagePlaceholder: 'Tell us about your needs...',
         send: 'Send Message',
+        sending: 'Sending...',
+        success: 'Thanks — your message has been sent. We will get back to you soon.',
+        error:
+          'Sorry, we could not send your message right now. Please try again or email us directly at info@hitaxalia.com.',
+        note: 'We usually respond within one business day.',
       },
     },
   },
@@ -281,8 +321,9 @@ export const ui = {
           'Servicios independientes de asesoramiento y valoración basados en datos para ayudar a empresas, inversores y profesionales a tomar decisiones informadas en Estados Unidos.',
       },
       about: {
-        title: 'Sobre nosotros - LB & CO Global Advisors',
-        description: 'Conoce LB & CO Global Advisors, nuestra misión y nuestro equipo.',
+        title: 'Sobre nosotros - LB&Co Global Advisors',
+        description:
+          'Servicios de impuestos y contabilidad de EE. UU. para estadounidenses en el extranjero con atención clara y personalizada en español.',
       },
       services: {
         title: 'Servicios - LB & CO Global Advisors',
@@ -331,11 +372,11 @@ export const ui = {
       kicker: 'Sobre nosotros',
       title: ['Orientación fiscal para', 'americanos hispanoparlantes', 'en el extranjero'],
       text:
-        'Ofrecemos servicios independientes de asesoramiento y valoración basados en datos para ayudar a empresas, inversores y profesionales a tomar decisiones informadas en Estados Unidos.',
+        'Ofrecemos servicios de impuestos y contabilidad de EE. UU. para estadounidenses en el extranjero, con orientación clara en español y apoyo práctico para el cumplimiento internacional.',
       book: 'Reservar una consulta',
       explore: 'Ver servicios',
-      trustLocation: 'Atendemos a clientes en Estados Unidos',
-      trustValues: 'Independientes. Objetivos. De confianza.',
+      trustLocation: 'Atendemos a clientes por todo el mundo',
+      trustValues: 'Independientes y de confianza.',
       imageAlt:
         'Dos asesores revisando gráficos financieros y datos en un entorno profesional',
     },
@@ -485,10 +526,44 @@ export const ui = {
     },
     pages: {
       about: {
-        eyebrow: 'Quiénes somos',
-        title: 'Sobre LB & CO Global Advisors',
+        eyebrow: 'Sobre nosotros',
+        title: 'Servicios de impuestos y contabilidad de EE. UU. para estadounidenses en el extranjero',
         lead:
-          'LB & CO Global Advisors es una firma independiente especializada en asesoramiento empresarial, valoraciones y orientación financiera. Nos comprometemos con la objetividad, la integridad y el análisis basado en datos para que nuestros clientes tomen decisiones con confianza.',
+          'En LB&Co Global Advisors, nos especializamos en servicios de impuestos y contabilidad de EE. UU. para estadounidenses que viven en el extranjero y prefieren comunicarse en español.',
+        intro: [
+          'Vivir fuera de EE. UU. no elimina tus obligaciones fiscales con el país, pero entender y gestionar esas obligaciones no debería complicarse por barreras de idioma. Nuestra misión es ayudar a ciudadanos estadounidenses, titulares de Green Card y personas con doble nacionalidad a navegar la complejidad del sistema fiscal de EE. UU. con confianza, claridad y acompañamiento personalizado en español.',
+          'Con más de 10 años de experiencia atendiendo a clientes expatriados, entendemos los retos únicos que enfrentan los estadounidenses que viven fuera de Estados Unidos. Desde declaraciones anuales y reportes de ingresos del extranjero hasta presentaciones FBAR, planificación fiscal y cumplimiento de requisitos internacionales de información, ofrecemos soluciones prácticas adaptadas a la situación de cada cliente.',
+          'Lo que nos diferencia es nuestra capacidad para combinar experiencia técnica con una comunicación clara. Sabemos que muchos estadounidenses hispanohablantes en el extranjero tienen dificultades para encontrar un profesional que no solo entienda la normativa fiscal estadounidense, sino que también pueda explicarla en su idioma. En LB&Co Global Advisors, hacemos que los temas fiscales complejos sean fáciles de entender, para que siempre sepas dónde estás y qué sigue.',
+        ],
+        whoWeServe: {
+          eyebrow: 'A quién ayudamos',
+          title: 'Trabajamos con',
+          items: [
+            'Ciudadanos estadounidenses que viven en el extranjero',
+            'Titulares de Green Card que residen fuera de Estados Unidos',
+            'Personas con doble nacionalidad',
+            'Expatriados hispanohablantes y familias internacionales',
+            'Freelancers, consultores y profesionales autónomos',
+            'Pequeños negocios con consideraciones fiscales internacionales',
+          ],
+        },
+        whyChoose: {
+          eyebrow: 'Por qué elegir LB&Co Global Advisors',
+          title: 'Por qué nuestros clientes nos eligen',
+          intro:
+            'En LB&Co Global Advisors creemos que todo estadounidense en el extranjero merece acceso a servicios fiscales y contables de alta calidad en un idioma que comprenda plenamente. Nuestro objetivo es simplificar el cumplimiento, reducir el estrés y ayudarte a concentrarte en construir tu vida dondequiera que llames hogar.',
+          items: [
+            'Más de 10 años de experiencia atendiendo a estadounidenses en el extranjero',
+            'Experiencia especializada en tributación de expatriados en EE. UU.',
+            'Profesional nativa de habla hispana',
+            'Servicio personalizado y ágil',
+            'Orientación clara, sin jerga fiscal innecesaria',
+            'Servicios remotos y seguros en todo el mundo',
+          ],
+        },
+        closing:
+          'Ayudando a estadounidenses en el extranjero a navegar los impuestos de EE. UU. con orientación experta en español.',
+        imageAlt: 'Retrato profesional de LB&Co Global Advisors',
       },
       contact: {
         eyebrow: 'Ponte en contacto',
@@ -501,6 +576,11 @@ export const ui = {
         message: 'Mensaje',
         messagePlaceholder: 'Cuéntanos qué necesitas...',
         send: 'Enviar mensaje',
+        sending: 'Enviando...',
+        success: 'Gracias — tu mensaje fue enviado. Te responderemos pronto.',
+        error:
+          'Lo siento, no pudimos enviar tu mensaje ahora mismo. Volvé a intentarlo o escribinos directamente a info@hitaxalia.com.',
+        note: 'Normalmente respondemos dentro de un día hábil.',
       },
     },
   },
