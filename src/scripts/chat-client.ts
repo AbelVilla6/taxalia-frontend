@@ -37,6 +37,7 @@ interface ServerSseEvent {
 
 const DEFAULT_TIMEOUT_MS = 30_000;
 const CONFIG_WAIT_MS = 1_000;
+const CHAT_CLOSED_STORAGE_KEY = 'taxalia:chat-closed';
 const TAXALIA_OPTIONS_BLOCK_RE = /```taxalia-options-json\s*[\s\S]*?```/gi;
 const TAXALIA_OPTIONS_INCOMPLETE_BLOCK_RE = /```taxalia-options-json\s*[\s\S]*$/i;
 
@@ -298,6 +299,30 @@ export function init(options: InitOptions = {}): void {
     let active: ActiveRequest | null = null;
     const history: ChatMessage[] = [];
     const partialCopy = widget.dataset.chatPartial ?? 'Some answers may be incomplete.';
+    const isChatClosedPersisted = (): boolean => {
+      try {
+        return window.localStorage.getItem(CHAT_CLOSED_STORAGE_KEY) === 'true';
+      } catch {
+        return false;
+      }
+    };
+
+    const setChatClosedPersisted = (closed: boolean): void => {
+      try {
+        if (closed) {
+          window.localStorage.setItem(CHAT_CLOSED_STORAGE_KEY, 'true');
+        } else {
+          window.localStorage.removeItem(CHAT_CLOSED_STORAGE_KEY);
+        }
+      } catch {
+        // Ignore storage failures and keep the chat usable.
+      }
+    };
+
+    const syncLauncherState = (closed: boolean): void => {
+      widget.hidden = closed;
+      launcherEl.hidden = !closed;
+    };
 
     const setBusy = (busy: boolean): void => {
       sendEl.disabled = busy || inputEl.value.trim().length === 0;
@@ -344,6 +369,8 @@ export function init(options: InitOptions = {}): void {
       resizeEl.textContent = expanded ? '⤡' : '⤢';
       messagesEl.scrollTop = messagesEl.scrollHeight;
     };
+
+    syncLauncherState(isChatClosedPersisted());
 
     const cancelActive = (): void => {
       if (!active) return;
@@ -581,8 +608,8 @@ export function init(options: InitOptions = {}): void {
 
     closeEl.addEventListener('click', () => {
       cancelActive();
-      widget.hidden = true;
-      launcherEl.hidden = false;
+      setChatClosedPersisted(true);
+      syncLauncherState(true);
       launcherEl.focus();
     });
 
@@ -591,8 +618,8 @@ export function init(options: InitOptions = {}): void {
     });
 
     launcherEl.addEventListener('click', () => {
-      launcherEl.hidden = true;
-      widget.hidden = false;
+      setChatClosedPersisted(false);
+      syncLauncherState(false);
       inputEl.focus();
     });
   })();

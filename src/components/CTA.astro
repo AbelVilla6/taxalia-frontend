@@ -3,22 +3,22 @@ import { localizePath, ui, type Lang } from '../i18n';
 
 export interface Props {
   lang?: Lang;
-  variant?: 'default' | 'wide';
+  variant?: 'default' | 'wide' | 'centered' | 'centered-roomy';
 }
 
 const { lang = 'en', variant = 'default' } = Astro.props;
 const copy = ui[lang].cta;
 ---
 
-<section class={`section-sm cta-section ${variant === 'wide' ? 'cta-section-wide' : ''}`} aria-labelledby="cta-heading">
+<section class={`section-sm cta-section ${variant !== 'default' ? `cta-section-${variant}` : ''}`} aria-labelledby="cta-heading">
   <div class="container">
-    <div class={`cta-grid ${variant === 'wide' ? 'cta-grid-wide' : ''}`}>
+    <div class={`cta-grid ${variant !== 'default' ? `cta-grid-${variant}` : ''}`}>
       <!-- Left: heading -->
-      <div>
+      <div class="cta-title">
         <h2 id="cta-heading" class="section-title" style="text-transform:none;font-weight:500;font-size:clamp(1.8rem,3vw,3rem);">
           {copy.title}
         </h2>
-        <p class="section-lead" style="margin-top:0.5rem;font-size:var(--text-sm);">
+        <p class="section-lead cta-lead" style="margin-top:0.5rem;font-size:var(--text-sm);">
           {copy.lead}
         </p>
       </div>
@@ -60,7 +60,7 @@ const copy = ui[lang].cta;
 
     </div>
 
-    <div style="margin-top:1.5rem;text-align:center;">
+    <div class="cta-social" style="margin-top:1.5rem;text-align:center;">
       <a
         href="https://instagram.com/lbcotax"
         class="cta-contact-item"
