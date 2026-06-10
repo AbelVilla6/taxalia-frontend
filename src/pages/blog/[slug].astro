@@ -2,8 +2,9 @@
 import Base from '../../layouts/Base.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import BlogTableOfContents from '../../components/BlogTableOfContents.astro';
 import { ui } from '../../i18n';
-import { getPost } from '../../lib/blog';
+import { getPost, jsonLdForScript, postSeoProps } from '../../lib/blog';
 import '../../assets/css/blog-post.css';
 
 export const prerender = false;
@@ -17,12 +18,33 @@ if (!post) {
   Astro.response.status = 404;
 }
 
+const seo = post ? postSeoProps(post, lang, Astro.site) : null;
 const dateFmt = { day: '2-digit', month: 'long', year: 'numeric' } as const;
 ---
 
 {
-  post ? (
-    <Base title={post.title} description={post.description} lang={lang}>
+  post && seo ? (
+    <Base
+      title={seo.title}
+      description={seo.description}
+      lang={lang}
+      canonicalUrl={seo.canonicalUrl}
+      alternateUrls={seo.alternateUrls}
+      ogTitle={seo.ogTitle}
+      ogDescription={seo.ogDescription}
+      ogImage={seo.ogImage}
+      ogType="article"
+    >
+      <Fragment slot="head">
+        {seo.keywords && <meta name="keywords" content={seo.keywords} />}
+        {post.articleJsonLd && (
+          <script type="application/ld+json" set:html={jsonLdForScript(post.articleJsonLd)} />
+        )}
+        {post.customJsonLd && (
+          <script type="application/ld+json" set:html={jsonLdForScript(post.customJsonLd)} />
+        )}
+      </Fragment>
+
       <Header activePage="blog" lang={lang} />
 
       <main id="main-content">
@@ -68,7 +90,10 @@ const dateFmt = { day: '2-digit', month: 'long', year: 'numeric' } as const;
             )}
           </header>
 
-          <div class="blog-post-detail__body" set:html={post.contentHtml} />
+          <div class="blog-post-detail__layout">
+            {post.toc.length > 0 && <BlogTableOfContents entries={post.toc} lang={lang} />}
+            <div class="blog-post-detail__body" set:html={post.contentHtml} />
+          </div>
         </article>
       </main>
 

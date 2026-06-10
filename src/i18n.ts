@@ -207,32 +207,16 @@ export const ui = {
       eyebrow: 'From Our Blog',
       title: 'Insights That Matter',
       readMore: 'Read More',
-      posts: [
-        {
-          date: 'May 10, 2024',
-          title: '2024 U.S. Real Estate Market Outlook: Key Trends and Opportunities',
-          excerpt:
-            'We break down the factors shaping the U.S. real estate market and what investors and business owners should watch.',
-          href: '/blog/2024-us-real-estate-market-outlook',
-          image: '/assets/images/blog-real-estate.webp',
-          imageAlt: 'Aerial view of a major US city skyline at dusk',
-        },
-        {
-          date: 'April 23, 2024',
-          title: 'Business Valuation 101: What You Need to Know',
-          excerpt:
-            'A practical guide to understanding business valuation methods and how they support better decision-making.',
-          href: '/blog/business-valuation-101',
-          image: '/assets/images/blog-valuation.webp',
-          imageAlt: 'Financial charts and pen on a desk',
-        },
-      ],
+      tocLabel: 'On this page',
     },
     cta: {
       title: "Let's Work Together",
       lead: "Have questions or ready to get started? We're here to help.",
       getInTouch: 'Get in Touch',
       followUs: 'Follow us',
+      emailSubject: 'Inquiry from the Taxalia website',
+      emailBody:
+        'Hello Taxalia team,\n\nI would like to make an inquiry about your services.\n\nName:\nMessage:\n\nThank you.',
     },
     footer: {
       rights: 'All rights reserved.',
@@ -258,6 +242,12 @@ export const ui = {
       humanHandoff: 'Talk to a person',
       disclaimer: 'AI can make mistakes. This is only to help clarify your questions.',
       partialWarning: 'Some answers may be incomplete.',
+      welcomeOptions: [
+        { id: 'income-tax', label: 'Income Tax', message: 'Tell me about your income tax services' },
+        { id: 'business-accounting', label: 'Business Accounting', message: 'Tell me about your business accounting services' },
+        { id: 'irs-tax-resolution', label: 'IRS Tax Resolution', message: 'Tell me about your IRS tax resolution services' },
+        { id: 'book-appointment', label: 'Book an Appointment', message: "I'd like to book an appointment" },
+      ],
     },
     pages: {
       about: {
@@ -314,7 +304,7 @@ export const ui = {
         sending: 'Sending...',
         success: 'Thanks — your message has been sent. We will get back to you soon.',
         error:
-          'Sorry, we could not send your message right now. Please try again or email us directly at info@hitaxalia.com.',
+          'Sorry, we could not send your message right now. Please try again or email us directly at {email}.',
         note: 'We usually respond within one business day.',
       },
       taxCalculator: {
@@ -602,33 +592,16 @@ export const ui = {
       eyebrow: 'Desde nuestro blog',
       title: 'Ideas que importan',
       readMore: 'Leer más',
-      posts: [
-        {
-          date: '10 de mayo de 2024',
-          title:
-            'Perspectivas del mercado inmobiliario de EE. UU. en 2024: tendencias y oportunidades',
-          excerpt:
-            'Analizamos los factores que están dando forma al mercado inmobiliario de EE. UU. y lo que inversores y empresas deben tener en cuenta.',
-          href: '/blog/2024-us-real-estate-market-outlook',
-          image: '/assets/images/blog-real-estate.webp',
-          imageAlt: 'Vista aérea de una gran ciudad estadounidense al atardecer',
-        },
-        {
-          date: '23 de abril de 2024',
-          title: 'Valoración de empresas 101: lo que necesitas saber',
-          excerpt:
-            'Una guía práctica para entender los métodos de valoración de empresas y cómo ayudan a tomar mejores decisiones.',
-          href: '/blog/business-valuation-101',
-          image: '/assets/images/blog-valuation.webp',
-          imageAlt: 'Gráficos financieros y un bolígrafo sobre un escritorio',
-        },
-      ],
+      tocLabel: 'En esta página',
     },
     cta: {
       title: 'Trabajemos juntos',
       lead: '¿Tienes preguntas o quieres empezar? Estamos aquí para ayudarte.',
       getInTouch: 'Contactar',
       followUs: 'Síguenos',
+      emailSubject: 'Consulta desde la web de Taxalia',
+      emailBody:
+        'Hola, equipo de Taxalia:\n\nMe gustaría haceros una consulta sobre vuestros servicios.\n\nNombre:\nMensaje:\n\nGracias.',
     },
     footer: {
       rights: 'Todos los derechos reservados.',
@@ -654,6 +627,12 @@ export const ui = {
       humanHandoff: 'Hablar con una persona',
       disclaimer: 'La IA puede equivocarse.',
       partialWarning: 'Algunas respuestas pueden estar incompletas.',
+      welcomeOptions: [
+        { id: 'income-tax', label: 'Impuesto sobre la renta', message: 'Cuéntame sobre sus servicios de impuestos sobre la renta' },
+        { id: 'business-accounting', label: 'Contabilidad empresarial', message: 'Cuéntame sobre sus servicios de contabilidad empresarial' },
+        { id: 'irs-tax-resolution', label: 'Resolución de deudas con el IRS', message: 'Cuéntame sobre sus servicios de resolución de deudas con el IRS' },
+        { id: 'book-appointment', label: 'Agendar una cita', message: 'Quiero agendar una cita' },
+      ],
     },
     pages: {
       about: {
@@ -710,7 +689,7 @@ export const ui = {
         sending: 'Enviando...',
         success: 'Gracias — tu mensaje fue enviado. Te responderemos pronto.',
         error:
-          'Lo siento, no pudimos enviar tu mensaje ahora mismo. Volvé a intentarlo o escribinos directamente a info@hitaxalia.com.',
+          'Lo siento, no pudimos enviar tu mensaje ahora mismo. Vuelve a intentarlo o escríbenos directamente a {email}.',
         note: 'Normalmente respondemos dentro de un día hábil.',
       },
       taxCalculator: {
@@ -835,3 +814,10 @@ export const ui = {
     },
   },
 } as const;
+
+export const contactEmail = 'info@hitaxalia.com';
+
+export function contactMailto(lang: Lang): string {
+  const { emailSubject, emailBody } = ui[lang].cta;
+  return `mailto:${contactEmail}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+}
