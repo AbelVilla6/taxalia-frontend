@@ -1,0 +1,181 @@
+---
+import { calculateTaxEstimate, standardDeductions, type FilingStatus } from '../lib/tax-calculator';
+import { ui, type Lang } from '../i18n';
+
+export interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const copy = ui[lang].pages.taxCalculator;
+const initialStatus: FilingStatus = 'single';
+const initialValues = {
+  filingStatus: initialStatus,
+  income: 85000,
+  deductions: standardDeductions[initialStatus],
+  credits: 0,
+  withholding: 12000,
+};
+const initialEstimate = calculateTaxEstimate(initialValues);
+const currencyFormatter = new Intl.NumberFormat(lang === 'es' ? 'es-ES' : 'en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+});
+const percentFormatter = new Intl.NumberFormat(lang === 'es' ? 'es-ES' : 'en-US', {
+  style: 'percent',
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+const statusOptions = Object.entries(copy.statuses) as Array<[FilingStatus, string]>;
+---
+
+<section class="section-sm tax-calculator-hero">
+  <div class="container">
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <div class="tax-calculator-heading">
+      <div>
+        <h1 class="section-title" style="text-transform:none;font-weight:500;">{copy.title}</h1>
+        <p class="section-lead">{copy.lead}</p>
+      </div>
+      <p class="tax-calculator-note">{copy.disclaimer}</p>
+    </div>
+  </div>
+</section>
+
+<section class="section tax-calculator-section">
+  <div class="container">
+    <div class="tax-calculator-grid">
+      <form id="tax-calculator-form" class="tax-calculator-card" aria-describedby="tax-calculator-note">
+        <div class="tax-form-grid">
+          <div class="form-field tax-form-field tax-form-field-wide">
+            <label class="tax-form-label" for="filing-status">{copy.fields.filingStatus}</label>
+            <select id="filing-status" name="filingStatus" class="tax-form-control">
+              {statusOptions.map(([value, label]) => (
+                <option value={value} selected={value === initialValues.filingStatus}>{label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div class="form-field tax-form-field">
+            <label class="tax-form-label" for="income">{copy.fields.income}</label>
+            <input id="income" name="income" class="tax-form-control" type="number" min="0" step="100" value={initialValues.income} inputmode="decimal" />
+          </div>
+
+          <div class="form-field tax-form-field">
+            <label class="tax-form-label" for="deductions">{copy.fields.deductions}</label>
+            <input id="deductions" name="deductions" class="tax-form-control" type="number" min="0" step="100" value={initialValues.deductions} inputmode="decimal" />
+          </div>
+
+          <div class="form-field tax-form-field">
+            <label class="tax-form-label" for="credits">{copy.fields.credits}</label>
+            <input id="credits" name="credits" class="tax-form-control" type="number" min="0" step="100" value={initialValues.credits} inputmode="decimal" />
+          </div>
+
+          <div class="form-field tax-form-field">
+            <label class="tax-form-label" for="withholding">{copy.fields.withholding}</label>
+            <input id="withholding" name="withholding" class="tax-form-control" type="number" min="0" step="100" value={initialValues.withholding} inputmode="decimal" />
+          </div>
+        </div>
+
+        <p id="tax-calculator-note" class="editorial-text tax-form-help">{copy.formHelp}</p>
+      </form>
+
+      <aside class="tax-calculator-card tax-results-card" aria-live="polite">
+        <p class="eyebrow">{copy.results.eyebrow}</p>
+        <div class="tax-result-list">
+          <div class="tax-result-item">
+            <span>{copy.results.taxableIncome}</span>
+            <strong id="taxable-income">{currencyFormatter.format(initialEstimate.taxableIncome)}</strong>
+          </div>
+          <div class="tax-result-item">
+            <span>{copy.results.estimatedTax}</span>
+            <strong id="estimated-tax">{currencyFormatter.format(initialEstimate.estimatedTax)}</strong>
+          </div>
+          <div class="tax-result-item">
+            <span>{copy.results.effectiveRate}</span>
+            <strong id="effective-rate">{percentFormatter.format(initialEstimate.effectiveTaxRate)}</strong>
+          </div>
+          <div class="tax-result-item tax-result-total">
+            <span id="balance-label">{initialEstimate.refundOrOwed >= 0 ? copy.results.refund : copy.results.owed}</span>
+            <strong id="refund-or-owed">{currencyFormatter.format(Math.abs(initialEstimate.refundOrOwed))}</strong>
+          </div>
+        </div>
+        <p class="editorial-text tax-results-note">{copy.results.note}</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{
+  labels: copy.results,
+  locale: lang === 'es' ? 'es-ES' : 'en-US',
+  standardDeductionDefaults: standardDeductions,
+}}>
+  import { calculateTaxEstimate } from '../lib/tax-calculator';
+
+  const form = document.getElementById('tax-calculator-form') as HTMLFormElement | null;
+  const statusField = document.getElementById('filing-status') as HTMLSelectElement | null;
+  const deductionsField = document.getElementById('deductions') as HTMLInputElement | null;
+  const taxableIncome = document.getElementById('taxable-income');
+  const estimatedTax = document.getElementById('estimated-tax');
+  const effectiveRate = document.getElementById('effective-rate');
+  const balanceLabel = document.getElementById('balance-label');
+  const refundOrOwed = document.getElementById('refund-or-owed');
+  const currencyFormatter = new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  });
+  const percentFormatter = new Intl.NumberFormat(locale, {
+    style: 'percent',
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
+  let lastStandardDeduction = Number(standardDeductionDefaults.single);
+
+  const readAmount = (name: string) => {
+    const field = form?.elements.namedItem(name) as HTMLInputElement | null;
+    return Number(field?.value || 0);
+  };
+
+  const updateEstimate = () => {
+    if (!form || !statusField || !taxableIncome || !estimatedTax || !effectiveRate || !balanceLabel || !refundOrOwed) {
+      return;
+    }
+
+    const estimate = calculateTaxEstimate({
+      filingStatus: statusField.value,
+      income: readAmount('income'),
+      deductions: readAmount('deductions'),
+      credits: readAmount('credits'),
+      withholding: readAmount('withholding'),
+    });
+
+    taxableIncome.textContent = currencyFormatter.format(estimate.taxableIncome);
+    estimatedTax.textContent = currencyFormatter.format(estimate.estimatedTax);
+    effectiveRate.textContent = percentFormatter.format(estimate.effectiveTaxRate);
+    balanceLabel.textContent = estimate.refundOrOwed >= 0 ? labels.refund : labels.owed;
+    refundOrOwed.textContent = currencyFormatter.format(Math.abs(estimate.refundOrOwed));
+  };
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    updateEstimate();
+  });
+  statusField?.addEventListener('change', () => {
+    if (!deductionsField || !statusField) {
+      return;
+    }
+
+    const currentDeduction = Number(deductionsField.value || 0);
+    const nextStandardDeduction = Number(standardDeductionDefaults[statusField.value] ?? currentDeduction);
+    if (currentDeduction === lastStandardDeduction) {
+      deductionsField.value = String(nextStandardDeduction);
+    }
+    lastStandardDeduction = nextStandardDeduction;
+    updateEstimate();
+  });
+
+  form?.addEventListener('input', updateEstimate);
+</script>

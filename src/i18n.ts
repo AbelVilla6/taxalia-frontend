@@ -12,7 +12,7 @@ export const languages = {
 } as const;
 
 export type Lang = keyof typeof languages;
-export type NavKey = 'about' | 'contact' | 'services' | 'blog';
+export type NavKey = 'about' | 'contact' | 'services' | 'blog' | 'taxCalculator';
 
 export const defaultLang: Lang = 'en';
 
@@ -62,6 +62,11 @@ export const ui = {
         description:
           'Income tax preparation, business accounting, payroll, and IRS tax problem resolution services from LB & CO Global Advisors.',
       },
+      taxCalculator: {
+        title: 'Tax Calculator - LB & CO Global Advisors',
+        description:
+          'Estimate taxable income, federal tax, effective tax rate, and refund or amount owed with LB & CO Global Advisors.',
+      },
       contact: {
         title: 'Contact Us - LB & CO Global Advisors',
         description:
@@ -89,6 +94,7 @@ export const ui = {
         contact: 'Contact Us',
         services: 'Services',
         blog: 'Blog',
+        taxCalculator: 'Tax Calculator',
       },
       book: 'Book a Consultation',
     },
@@ -311,6 +317,39 @@ export const ui = {
           'Sorry, we could not send your message right now. Please try again or email us directly at info@hitaxalia.com.',
         note: 'We usually respond within one business day.',
       },
+      taxCalculator: {
+        eyebrow: 'Tax Calculator',
+        title: 'Estimate Your U.S. Federal Tax',
+        lead:
+          'Enter a few numbers to estimate taxable income, federal income tax, effective tax rate, and whether you may receive a refund or owe more.',
+        disclaimer:
+          'This calculator is an educational estimate based on simplified 2025 federal brackets and standard deduction defaults. It is not tax advice and does not include state tax, AMT, self-employment tax, foreign exclusions, treaty positions, penalties, or every IRS rule.',
+        formHelp:
+          'Deductions start with the standard deduction for the selected filing status. You can replace that amount if you expect itemized deductions or a different deduction profile.',
+        fields: {
+          filingStatus: 'Filing status',
+          income: 'Total income',
+          deductions: 'Deductions',
+          credits: 'Tax credits',
+          withholding: 'Federal withholding / payments',
+        },
+        statuses: {
+          single: 'Single',
+          marriedJoint: 'Married filing jointly',
+          marriedSeparate: 'Married filing separately',
+          headOfHousehold: 'Head of household',
+        },
+        results: {
+          eyebrow: 'Estimated result',
+          taxableIncome: 'Taxable income',
+          estimatedTax: 'Estimated federal tax',
+          effectiveRate: 'Effective tax rate',
+          refund: 'Estimated refund',
+          owed: 'Estimated amount owed',
+          note:
+            'Use this as a planning signal only. For U.S. taxpayers abroad, foreign income, credits, exclusions, and reporting obligations can materially change the result.',
+        },
+      },
     },
   },
   es: {
@@ -329,6 +368,11 @@ export const ui = {
         title: 'Servicios - LB & CO Global Advisors',
         description:
           'Servicios de preparación de impuestos, contabilidad para negocios, nómina y resolución de problemas fiscales con el IRS de LB & CO Global Advisors.',
+      },
+      taxCalculator: {
+        title: 'Calculadora de impuestos - LB & CO Global Advisors',
+        description:
+          'Estima ingresos imponibles, impuesto federal, tasa efectiva y reembolso o saldo a pagar con LB & CO Global Advisors.',
       },
       contact: {
         title: 'Contacto - LB & CO Global Advisors',
@@ -358,6 +402,7 @@ export const ui = {
         contact: 'Contacto',
         services: 'Servicios',
         blog: 'Blog',
+        taxCalculator: 'Calculadora fiscal',
       },
       book: 'Reservar una consulta',
     },
@@ -581,6 +626,39 @@ export const ui = {
         error:
           'Lo siento, no pudimos enviar tu mensaje ahora mismo. Volvé a intentarlo o escribinos directamente a info@hitaxalia.com.',
         note: 'Normalmente respondemos dentro de un día hábil.',
+      },
+      taxCalculator: {
+        eyebrow: 'Calculadora fiscal',
+        title: 'Estima tu impuesto federal de EE. UU.',
+        lead:
+          'Ingresa algunos datos para estimar ingresos imponibles, impuesto federal sobre la renta, tasa efectiva y si podrías recibir un reembolso o tener saldo a pagar.',
+        disclaimer:
+          'Esta calculadora es una estimación educativa basada en tramos federales simplificados de 2025 y deducciones estándar por defecto. No es asesoramiento fiscal y no incluye impuestos estatales, AMT, impuesto de autónomos, exclusiones de ingresos extranjeros, tratados, multas ni todas las reglas del IRS.',
+        formHelp:
+          'Las deducciones empiezan con la deducción estándar para el estado civil seleccionado. Puedes reemplazar ese importe si esperas deducciones detalladas u otro perfil de deducciones.',
+        fields: {
+          filingStatus: 'Estado civil fiscal',
+          income: 'Ingresos totales',
+          deductions: 'Deducciones',
+          credits: 'Créditos fiscales',
+          withholding: 'Retenciones / pagos federales',
+        },
+        statuses: {
+          single: 'Soltero/a',
+          marriedJoint: 'Casados con declaración conjunta',
+          marriedSeparate: 'Casados con declaración separada',
+          headOfHousehold: 'Cabeza de familia',
+        },
+        results: {
+          eyebrow: 'Resultado estimado',
+          taxableIncome: 'Ingresos imponibles',
+          estimatedTax: 'Impuesto federal estimado',
+          effectiveRate: 'Tasa efectiva',
+          refund: 'Reembolso estimado',
+          owed: 'Saldo estimado a pagar',
+          note:
+            'Úsalo solo como una señal de planificación. Para contribuyentes estadounidenses en el extranjero, ingresos del exterior, créditos, exclusiones y obligaciones de reporte pueden cambiar materialmente el resultado.',
+        },
       },
     },
   },
