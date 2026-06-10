@@ -3,15 +3,16 @@ import { localizePath, ui, type Lang } from '../i18n';
 
 export interface Props {
   lang?: Lang;
+  variant?: 'default' | 'wide';
 }
 
-const { lang = 'en' } = Astro.props;
+const { lang = 'en', variant = 'default' } = Astro.props;
 const copy = ui[lang].cta;
 ---
 
-<section class="section-sm cta-section" aria-labelledby="cta-heading">
+<section class={`section-sm cta-section ${variant === 'wide' ? 'cta-section-wide' : ''}`} aria-labelledby="cta-heading">
   <div class="container">
-    <div class="cta-grid">
+    <div class={`cta-grid ${variant === 'wide' ? 'cta-grid-wide' : ''}`}>
       <!-- Left: heading -->
       <div>
         <h2 id="cta-heading" class="section-title" style="text-transform:none;font-weight:500;font-size:clamp(1.8rem,3vw,3rem);">
