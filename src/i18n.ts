@@ -385,12 +385,7 @@ export const ui = {
           refundableCredits: 'Refundable credits',
         },
         helpers: {
-          wages: 'Usually W-2 box 1. Include only the primary taxpayer here.',
-          spouseWages: 'Shown only for joint or qualifying surviving spouse returns.',
-          taxExemptInterest: 'Used for Social Security benefit taxation; it is not added to taxable income directly.',
-          studentLoanInterest: 'The calculator applies a simplified 2026 phaseout and $2,500 cap.',
-          medicalExpenses: 'Only the portion above 7.5% of AGI is counted as an itemized deduction.',
-          stateLocalTaxes: 'Uses a simplified 2026 SALT cap: $40,400, or $20,200 if married filing separately.',
+          
         },
         statuses: {
           marriedJoint: 'Married filing jointly',
@@ -786,12 +781,7 @@ export const ui = {
           refundableCredits: 'Créditos reembolsables',
         },
         helpers: {
-          wages: 'Normalmente, casilla 1 del W-2. Introduce aquí solo los ingresos del contribuyente principal.',
-          spouseWages: 'Solo se muestra para declaración conjunta o qualified surviving spouse.',
-          taxExemptInterest: 'Se usa para calcular la parte imponible del Social Security; no se suma directamente a los ingresos imponibles.',
-          studentLoanInterest: 'La calculadora aplica una fase de eliminación simplificada de 2026 y el límite de $2,500.',
-          medicalExpenses: 'Solo cuenta como deducción detallada la parte que supera el 7.5% del AGI.',
-          stateLocalTaxes: 'Usa un límite SALT simplificado de 2026: $40,400, o $20,200 si es married filing separately.',
+          
         },
         statuses: {
           marriedJoint: 'Casados con declaración conjunta',
