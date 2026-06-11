@@ -204,7 +204,7 @@ export const ui = {
       ],
     },
     blog: {
-      eyebrow: 'From Our Blog',
+      //eyebrow: 'From Our Blog',
       title: 'Insights That Matter',
       readMore: 'Read More',
       tocLabel: 'On this page',
@@ -291,7 +291,7 @@ export const ui = {
         imageAlt: 'LB&Co Global Advisors professional portrait',
       },
       contact: {
-        eyebrow: 'Get In Touch',
+        //eyebrow: 'Get In Touch',
         title: 'Contact Us',
         consultation: 'Book a Consultation',
         name: 'Full Name',
@@ -589,7 +589,7 @@ export const ui = {
       ],
     },
     blog: {
-      eyebrow: 'Desde nuestro blog',
+      //eyebrow: 'Desde nuestro blog',
       title: 'Ideas que importan',
       readMore: 'Leer más',
       tocLabel: 'En esta página',
@@ -676,7 +676,7 @@ export const ui = {
         imageAlt: 'Retrato profesional de LB&Co Global Advisors',
       },
       contact: {
-        eyebrow: 'Ponte en contacto',
+        //eyebrow: 'Ponte en contacto',
         title: 'Contacto',
         consultation: 'Reservar una consulta',
         name: 'Nombre completo',
