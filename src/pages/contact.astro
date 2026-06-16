@@ -9,7 +9,7 @@ const lang = 'en';
 const copy = ui[lang];
 const backendBase = (import.meta.env.PUBLIC_CHAT_API_BASE ?? 'http://localhost:4324').replace(/\/+$/, '');
 const mailtoHref = contactMailto(lang);
-const calcomUrl = (import.meta.env.PUBLIC_CALCOM_URL ?? 'https://cal.com/felipe-costa').replace(/\/+$/, '');
+const calcomUrl = (import.meta.env.PUBLIC_CALCOM_URL ?? 'https://cal.com/lb-co-global-advisors').replace(/\/+$/, '');
 const calcomLink = calcomUrl.replace('https://cal.com/', '');
 ---
 
@@ -88,24 +88,19 @@ const calcomLink = calcomUrl.replace('https://cal.com/', '');
             </form>
           </div>
 
-          <div style="padding-top:3.5rem;">
-            <CTA lang={lang} variant="centered-roomy" />
+          <div>
+            <h2 class="section-title" style="font-size:1.8rem;text-transform:none;font-weight:500;margin-bottom:0.5rem;">
+              Schedule Your Appointment
+            </h2>
+            <div
+              id="cal-booking-inline"
+              style="width:100%;min-height:600px;border-radius:var(--radius-md);overflow:hidden;"
+            ></div>
           </div>
         </div>
       </div>
     </section>
-    <section id="booking" class="section" style="background:var(--color-bg-soft);">
-      <div class="container">
-        <p class="eyebrow">Free Consultation</p>
-        <h2 class="section-title" style="font-size:1.8rem;text-transform:none;font-weight:500;margin-bottom:2rem;">
-          Schedule Your Appointment
-        </h2>
-        <div
-          id="cal-booking-inline"
-          style="width:100%;min-height:600px;border-radius:var(--radius-md);overflow:hidden;"
-        ></div>
-      </div>
-    </section>
+    <CTA lang={lang} variant="centered" />
   </main>
   <Footer lang={lang} />
 

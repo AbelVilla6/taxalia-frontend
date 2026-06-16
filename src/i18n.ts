@@ -815,7 +815,7 @@ export const ui = {
   },
 } as const;
 
-export const contactEmail = 'info@hitaxalia.com';
+export const contactEmail = 'lbglobaltax@gmail.com';
 
 export function contactMailto(lang: Lang): string {
   const { emailSubject, emailBody } = ui[lang].cta;
