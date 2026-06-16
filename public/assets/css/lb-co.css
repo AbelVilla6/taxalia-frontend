@@ -269,10 +269,50 @@
 }
 
 /* ---- Blog / insights ---- */
-.blog-lb {
-  background: var(--color-bg);
+/* ---- Blog page ultra compact ---- */
+.blog-hero-section {
+  padding-top: 1rem !important;
+  padding-bottom: 0.3rem !important;
 }
 
+.blog-hero-section .eyebrow {
+  margin-bottom: 0.35rem !important;
+}
+
+.blog-hero-section .section-title {
+  font-size: clamp(2.4rem, 4.8vw, 4.1rem);
+  line-height: 0.95;
+  margin-bottom: 2rem !important;
+}
+
+.blog-lb {
+  padding-top: 0.4rem !important;
+}
+
+.blog-grid-lb {
+  margin-top: 0 !important;
+  gap: 1.25rem 2rem;
+}
+
+.post-card-lb {
+  gap: 1rem;
+}
+
+.post-card-lb .post-image {
+  max-height: 170px;
+  object-fit: cover;
+}
+
+.post-title {
+  font-size: 1.2rem;
+  line-height: 1.15;
+  margin-bottom: 0.5rem;
+}
+
+.post-excerpt {
+  line-height: 1.45;
+  margin-bottom: 0.65rem;
+}
 .blog-grid-lb {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -958,6 +998,51 @@
   transform: translateY(0);
 }
 
+.chat-booking-card {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid rgba(76, 54, 45, 0.15);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, rgba(200, 161, 90, 0.12), rgba(76, 54, 45, 0.06));
+}
+
+.chat-booking-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.chat-booking-btn {
+  display: inline-block;
+  padding: 0.48rem 1rem;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+  color: var(--color-white);
+  font-size: var(--text-xs);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  box-shadow: 0 6px 16px rgba(76, 54, 45, 0.18);
+  transition:
+    transform var(--speed-fast) var(--ease),
+    box-shadow var(--speed-fast) var(--ease),
+    filter var(--speed-fast) var(--ease);
+}
+
+.chat-booking-btn:hover,
+.chat-booking-btn:focus-visible {
+  box-shadow: 0 10px 24px rgba(76, 54, 45, 0.28);
+  filter: saturate(1.1);
+  transform: translateY(-2px);
+}
+
+.chat-booking-btn:active {
+  transform: translateY(0);
+}
+
 .chat-msg-warning {
   margin: 0.35rem 0 0;
   padding: 0.3rem 0.6rem;
@@ -1108,4 +1193,34 @@
     width: calc(100% - 2rem);
     max-height: calc(100vh - 2rem);
   }
+}
+
+/* ---- Contact page compact spacing ---- */
+.contact-hero-section {
+  --contact-hero-padding-top: 1rem;
+  --contact-hero-padding-bottom: 0.8rem;
+  --contact-title-size: clamp(2.2rem, 4vw, 3.6rem);
+
+  padding-top: var(--contact-hero-padding-top) !important;
+  padding-bottom: var(--contact-hero-padding-bottom) !important;
+
+}
+
+.contact-hero-section .eyebrow {
+  justify-content: center;
+  margin-bottom: 0.45rem !important;
+}
+
+.contact-hero-section .section-title {
+  font-size: var(--contact-title-size) !important;
+  line-height: 0.95;
+  margin-bottom: 0 !important;
+
+
+}
+
+.contact-content-section {
+  --contact-content-padding-top: 1.5rem;
+
+  padding-top: var(--contact-content-padding-top) !important;
 }
