@@ -5,6 +5,6 @@ import node from '@astrojs/node';
 // Blog routes opt into on-demand SSR (`export const prerender = false`) so they
 // render fresh HTML from the backend content API on each request.
 export default defineConfig({
-  site: 'https://lbcoglobaladvisors.com',
+  site: 'https://lbglobaltax.com',
   adapter: node({ mode: 'standalone' }),
 });
