@@ -6,7 +6,7 @@
     "dev": "astro dev",
     "host": "astro dev --host",
     "build": "astro build",
-     "start": "HOST=0.0.0.0 NODE_ENV=production node dist/server/entry.mjs",
+     "start": "node dist/server/entry.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "setup": "node scripts/setup.mjs"
