@@ -6,7 +6,7 @@
     "dev": "astro dev",
     "host": "astro dev --host",
     "build": "astro build",
-    "start": "HOST=0.0.0.0 PORT=8080 NODE_ENV=production node dist/server/entry.mjs",
+     "start": "HOST=0.0.0.0 NODE_ENV=production node ./scripts/start-hostinger.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "setup": "node scripts/setup.mjs"
