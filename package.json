@@ -6,7 +6,7 @@
     "dev": "astro dev",
     "host": "astro dev --host",
     "build": "astro build",
-    "start": "node dist/server/entry.mjs",
+    "start": "node ./dist/server/entry.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "setup": "node scripts/setup.mjs"
@@ -14,8 +14,4 @@
   "dependencies": {
     "@astrojs/node": "11.0.0",
     "astro": "7.0.3"
-  },
-  "engines": {
-    "node": ">=24.0.0"
   }
-}
