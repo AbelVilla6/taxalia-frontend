@@ -7,8 +7,7 @@ import node from '@astrojs/node';
 
 export default defineConfig({
   output: 'server',
-  site: 'https://lbglobaltax.com',
   adapter: node({
-    mode: 'standalone'
+    mode: 'middleware'
   })
 });
