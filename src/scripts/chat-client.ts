@@ -1,4 +1,4 @@
-import { basePathFromPathname } from '../i18n';
+import { basePathFromPathname, localizePath } from '../i18n';
 
 export interface ChatConfig {
   apiBase: string;
@@ -20,7 +20,6 @@ interface ChatOption {
 interface ParsedAssistantContent {
   markdown: string;
   options: ChatOption[];
-  booking: BookingPayload | null;
 }
 
 export interface InitOptions {
@@ -43,14 +42,6 @@ const CONFIG_WAIT_MS = 1_000;
 const CHAT_STATE_STORAGE_KEY = 'taxalia:chat-state';
 const TAXALIA_OPTIONS_BLOCK_RE = /```taxalia-options-json\s*[\s\S]*?```/gi;
 const TAXALIA_OPTIONS_INCOMPLETE_BLOCK_RE = /```taxalia-options-json\s*[\s\S]*$/i;
-const TAXALIA_BOOKING_BLOCK_RE = /```taxalia-booking-json\s*[\s\S]*?```/gi;
-const TAXALIA_BOOKING_INCOMPLETE_BLOCK_RE = /```taxalia-booking-json\s*[\s\S]*$/i;
-
-interface BookingPayload {
-  url: string;
-  label: string;
-}
-
 function isChatConfig(value: unknown): value is ChatConfig {
   if (!value || typeof value !== 'object') return false;
   const v = value as Record<string, unknown>;
@@ -153,19 +144,6 @@ function normalizeOption(option: unknown): ChatOption | null {
   return { id, label, message };
 }
 
-function parseBookingPayload(payload: string): BookingPayload | null {
-  try {
-    const parsed: unknown = JSON.parse(payload.trim());
-    if (!parsed || typeof parsed !== 'object') return null;
-    const v = parsed as Record<string, unknown>;
-    if (typeof v.url !== 'string' || typeof v.label !== 'string') return null;
-    if (!isSafeHref(v.url)) return null;
-    return { url: v.url, label: v.label };
-  } catch {
-    return null;
-  }
-}
-
 function parseAssistantContent(rawText: string): ParsedAssistantContent {
   const blockPattern = /```taxalia-options-json\s*\n?([\s\S]*?)```/gi;
   const incompleteBlockPattern = /```taxalia-options-json\s*\n?([\s\S]*)$/i;
@@ -195,58 +173,22 @@ function parseAssistantContent(rawText: string): ParsedAssistantContent {
     }
   }
 
-  // Extract booking block
-  const bookingBlockPattern = /```taxalia-booking-json\s*\n?([\s\S]*?)```/gi;
-  const bookingIncompletePattern = /```taxalia-booking-json\s*\n?([\s\S]*)$/i;
-  let booking: BookingPayload | null = null;
-  const withoutBookingComplete = withoutCompleteBlocks.replace(bookingBlockPattern, (_block, payload: string) => {
-    if (!booking) booking = parseBookingPayload(payload);
-    return '';
-  });
-  if (!booking) {
-    const bookingIncomplete = bookingIncompletePattern.exec(withoutBookingComplete);
-    if (bookingIncomplete?.[1]) booking = parseBookingPayload(bookingIncomplete[1]);
-  }
-
   const visibleMarkdown = rawText
     .replace(TAXALIA_OPTIONS_BLOCK_RE, '')
     .replace(TAXALIA_OPTIONS_INCOMPLETE_BLOCK_RE, '')
-    .replace(TAXALIA_BOOKING_BLOCK_RE, '')
-    .replace(TAXALIA_BOOKING_INCOMPLETE_BLOCK_RE, '')
     .trimEnd();
 
   return {
     markdown: visibleMarkdown.trim(),
     options,
-    booking,
   };
-}
-
-function renderBookingCard(booking: BookingPayload): HTMLElement {
-  const card = document.createElement('div');
-  card.className = 'chat-booking-card';
-
-  const icon = document.createElement('span');
-  icon.className = 'chat-booking-icon';
-  icon.setAttribute('aria-hidden', 'true');
-  icon.textContent = '📅';
-
-  const link = document.createElement('a');
-  link.className = 'chat-booking-btn';
-  link.href = escapeHtml(booking.url);
-  link.target = '_blank';
-  link.rel = 'noopener noreferrer';
-  link.textContent = booking.label;
-
-  card.appendChild(icon);
-  card.appendChild(link);
-  return card;
 }
 
 function renderAssistantMessage(
   assistantBubble: HTMLElement,
   assistantEl: HTMLElement,
   onOptionSelected: (message: string) => void,
+  onBookAppointment: () => void,
   rawText: string,
 ): ParsedAssistantContent {
   const parsed = parseAssistantContent(rawText);
@@ -254,9 +196,6 @@ function renderAssistantMessage(
 
   const existingOptions = assistantEl.querySelector<HTMLElement>('.chat-msg-options');
   if (existingOptions) existingOptions.remove();
-
-  const existingBooking = assistantEl.querySelector<HTMLElement>('.chat-booking-card');
-  if (existingBooking) existingBooking.remove();
 
   if (parsed.options.length > 0) {
     const optionsEl = document.createElement('div');
@@ -270,16 +209,16 @@ function renderAssistantMessage(
       button.dataset.message = option.message;
       button.dataset.optionId = option.id;
       button.addEventListener('click', () => {
+        if (option.id === 'book-appointment') {
+          onBookAppointment();
+          return;
+        }
         onOptionSelected(option.message);
       });
       optionsEl.appendChild(button);
     }
 
     assistantEl.appendChild(optionsEl);
-  }
-
-  if (parsed.booking) {
-    assistantEl.appendChild(renderBookingCard(parsed.booking));
   }
 
   return parsed;
@@ -389,6 +328,10 @@ export function init(options: InitOptions = {}): void {
       document.documentElement.dataset.chatState = closed ? 'closed' : 'open';
       widget.hidden = closed;
       launcherEl.hidden = !closed;
+    };
+
+    const openContact = (): void => {
+      window.location.assign(localizePath(config.lang, '/contact'));
     };
 
     // Pre-rendered welcome option buttons (server-side from ChatWidget.astro).
@@ -530,6 +473,7 @@ export function init(options: InitOptions = {}): void {
             assistantBubble,
             assistantEl,
             submitOption,
+            openContact,
             assistantText,
           );
           assistantMsg.content = parsed.markdown;
@@ -589,6 +533,7 @@ export function init(options: InitOptions = {}): void {
                   assistant.bubble,
                   assistant.el,
                   submitOption,
+                  openContact,
                   assistantText,
                 );
                 assistantMsg.content = parsed.markdown;
@@ -610,6 +555,7 @@ export function init(options: InitOptions = {}): void {
                   assistantBubble,
                   assistantEl,
                   submitOption,
+                  openContact,
                   assistantText,
                 );
                 assistantMsg.content = parsed.markdown;
@@ -637,6 +583,7 @@ export function init(options: InitOptions = {}): void {
             assistantBubble,
             assistantEl,
             submitOption,
+            openContact,
             assistantText,
           );
           assistantMsg.content = parsed.markdown;
@@ -655,6 +602,7 @@ export function init(options: InitOptions = {}): void {
             assistantBubble,
             assistantEl,
             submitOption,
+            openContact,
             assistantText,
           );
           assistantMsg.content = parsed.markdown;
@@ -708,7 +656,13 @@ export function init(options: InitOptions = {}): void {
     if (welcomeOptionsEl) {
       const welcomeButtons = welcomeOptionsEl.querySelectorAll<HTMLButtonElement>('.chat-msg-option');
       welcomeButtons.forEach((btn) => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          if (btn.dataset.optionId === 'book-appointment') {
+            openContact();
+            return;
+          }
           const message = btn.dataset.message ?? '';
           if (!message.trim() || active) return;
           void send(message);

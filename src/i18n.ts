@@ -214,9 +214,9 @@ export const ui = {
       lead: "Have questions or ready to get started? We're here to help.",
       getInTouch: 'Get in Touch',
       followUs: 'Follow us',
-      emailSubject: 'Inquiry from the Taxalia website',
+      emailSubject: 'Inquiry from the LB&Co Global Advisors website',
       emailBody:
-        'Hello Taxalia team,\n\nI would like to make an inquiry about your services.\n\nName:\nMessage:\n\nThank you.',
+        'Hello LB&Co Global Advisors team,\n\nI would like to make an inquiry about your services.\n\nName:\nMessage:\n\nThank you.',
     },
     footer: {
       rights: 'All rights reserved.',
@@ -599,9 +599,9 @@ export const ui = {
       lead: '¿Tienes preguntas o quieres empezar? Estamos aquí para ayudarte.',
       getInTouch: 'Contactar',
       followUs: 'Síguenos',
-      emailSubject: 'Consulta desde la web de Taxalia',
+      emailSubject: 'Consulta desde la web de LB&Co Global Advisors',
       emailBody:
-        'Hola, equipo de Taxalia:\n\nMe gustaría haceros una consulta sobre vuestros servicios.\n\nNombre:\nMensaje:\n\nGracias.',
+        'Hola, equipo de LB&Co Global Advisors:\n\nMe gustaría haceros una consulta sobre vuestros servicios.\n\nNombre:\nMensaje:\n\nGracias.',
     },
     footer: {
       rights: 'Todos los derechos reservados.',
