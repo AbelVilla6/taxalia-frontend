@@ -288,7 +288,6 @@ export function init(options: InitOptions = {}): void {
     }
 
     const isHomePage = basePathFromPathname(window.location.pathname) === '/';
-    const contactHref = localizePath(config.lang, '/contact');
 
     const messagesEl = widget.querySelector<HTMLElement>('#chat-messages');
     const formEl = widget.querySelector<HTMLFormElement>('#chat-form');
@@ -329,6 +328,10 @@ export function init(options: InitOptions = {}): void {
       document.documentElement.dataset.chatState = closed ? 'closed' : 'open';
       widget.hidden = closed;
       launcherEl.hidden = !closed;
+    };
+
+    const openContact = (): void => {
+      window.location.assign(localizePath(config.lang, '/contact'));
     };
 
     // Pre-rendered welcome option buttons (server-side from ChatWidget.astro).
@@ -443,9 +446,6 @@ export function init(options: InitOptions = {}): void {
       let assistantEl: HTMLElement | null = null;
       let assistantBubble: HTMLElement | null = null;
       let assistantText = '';
-      const openContact = (): void => {
-        window.location.assign(contactHref);
-      };
       const submitOption = (message: string): void => {
         if (!message.trim() || active) return;
         void send(message);
@@ -656,7 +656,9 @@ export function init(options: InitOptions = {}): void {
     if (welcomeOptionsEl) {
       const welcomeButtons = welcomeOptionsEl.querySelectorAll<HTMLButtonElement>('.chat-msg-option');
       welcomeButtons.forEach((btn) => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
           if (btn.dataset.optionId === 'book-appointment') {
             openContact();
             return;
